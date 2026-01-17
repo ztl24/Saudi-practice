@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金色迷雾：第24维度</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --sand-gold: #D4AF37;
+            --deep-space: #050505;
+            --ink-black: #111;
+            --cinnabar: #cf2e2e;
+        }
+
+        body {
+            background-color: var(--deep-space);
+            color: var(--sand-gold);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 深邃背景：径向渐变 */
+            background: radial-gradient(circle at center, #1a1505 0%, #000000 100%);
+            transition: background 2s ease;
+        }
+
+        /* 粒子层 */
+        #canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* 信号层 */
+        #signal-layer {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            transform: translateY(-50%);
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* UI 层 */
+        #ui-layer {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            box-sizing: border-box;
+        }
+
+        /* 文本容器 - 重新设计 */
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 900px;
+            text-align: center;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        .text-line {
+            font-family: 'Noto Serif SC', serif; /* 更具文学感的衬线体 */
+            font-size: 2rem; /* 更大的字号 */
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 10px rgba(0,0,0,0.8);
+            font-weight: 700;
+        }
+
+        .text-line.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-red {
+            color: #ff4d4d;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .highlight-ink {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* 控制按钮 */
+        .controls {
+            pointer-events: auto;
+            cursor: pointer;
+            border: 1px solid var(--sand-gold);
+            padding: 12px 24px;
+            background: rgba(0,0,0,0.6);
+            color: var(--sand-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(4px);
+        }
+        .controls:hover {
+            background: var(--sand-gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 氛围覆盖层 */
+        .atmosphere-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 2s ease, background-color 2s ease;
+            pointer-events: none;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- 氛围层 (用于颜色切换) -->
+    <div id="atmosphere" class="atmosphere-overlay"></div>
+
+    <!-- 粒子背景 -->
+    <canvas id="canvas-layer"></canvas>
+
+    <!-- 信号线 (纯抽象) -->
+    <svg id="signal-layer" viewBox="0 0 1920 200" preserveAspectRatio="none">
+        <path id="signal-path" d="" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" fill="none" />
+    </svg>
+
+    <!-- UI 层 -->
+    <div id="ui-layer">
+        <div class="flex justify-between w-full opacity-70">
+            <div class="text-sm tracking-widest font-mono">
+                SIGNAL: LISTENING...<br>
+                FREQ: 24.000 Hz
+            </div>
+            <div class="text-sm tracking-widest font-mono text-right">
+                LOC: 24°N<br>
+                EST: 2026
+            </div>
+        </div>
+        
+        <!-- 居中文本展示区 -->
+        <div class="text-container" id="text-output">
+             <!-- 内容将通过 JS 插入 -->
+        </div>
+
+        <div class="w-full flex justify-center pb-10">
+            <button id="start-btn" class="controls">接入信号 / CONNECT</button>
+        </div>
+    </div>
+
+    <script>
+        // --- 变量初始化区域 ---
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+        const signalPath = document.getElementById('signal-path');
+        const outputDiv = document.getElementById('text-output');
+        const startBtn = document.getElementById('start-btn');
+        const atmosphere = document.getElementById('atmosphere');
+
+        let width, height;
+        let particles = [];
+        let flowLines = []; // 新增：灵动线条数组
+        let time = 0;
+        let signalIntensity = 0; // 0 到 1
+        let currentMood = 'default';
+
+        // --- 1. 深邃粒子系统 (多层视差) ---
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initFlowLines(); // 窗口大小时重新初始化线条
+        }
+        window.addEventListener('resize', resize);
+        
+        class Particle {
+            constructor() {
+                this.reset();
+                this.x = Math.random() * width;
+            }
+            reset() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.z = Math.random(); 
+                this.size = (this.z * 2.5) + 0.5; 
+                this.speedX = (this.z * 4) + 0.5;
+                this.opacity = (this.z * 0.7) + 0.1;
+                const gold = [212, 175, 55];
+                this.color = `rgba(${gold[0]}, ${gold[1]}, ${gold[2]}, ${this.opacity})`;
+            }
+            update() {
+                this.x += this.speedX;
+                if (this.x > width) {
+                    this.x = -10;
+                    this.y = Math.random() * height;
+                }
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                if (this.z < 0.3) {
+                     ctx.shadowBlur = 0;
+                } else {
+                     ctx.shadowBlur = this.z * 5;
+                     ctx.shadowColor = this.color;
+                }
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // --- 4. 修改后：灵动线条系统 (穿越屏幕的笔触) ---
+        class FlowLine {
+            constructor() {
+                // 初始化时随机分散在屏幕内外，避免同时出现
+                this.reset();
+                this.x = Math.random() * width * 1.5 - width * 0.5;
+            }
+
+            reset() {
+                this.x = -1000 - Math.random() * 500; // 从屏幕左侧外远处开始
+                this.y = Math.random() * height;
+                this.amplitude = 50 + Math.random() * 80; // 振幅加大
+                this.speed = 8 + Math.random() * 12; // 飞行速度加快
+                this.frequency = 0.003 + Math.random() * 0.003; 
+                this.phase = Math.random() * Math.PI * 2;
+                
+                // 线条长度
+                this.length = width * 0.4 + Math.random() * width * 0.4;
+                
+                // 基础宽度
+                this.baseWidth = 4 + Math.random() * 4;
+            }
+
+            update() {
+                this.x += this.speed;
+                // 如果整条线都跑出了屏幕右侧，重置到左侧
+                if (this.x - this.length > width) {
+                    this.reset();
+                }
+            }
+
+            draw(ctx, time, colorString, isInkMode) {
+                // 优化：如果在屏幕外，不绘制
+                if (this.x + this.length < 0 || this.x - this.length > width + 2000) return;
+
+                ctx.beginPath();
+                
+                // 绘制逻辑
+                let startX = Math.max(0, this.x); // 裁剪
+                let endX = Math.min(width, this.x + this.length);
+                
+                // 如果完全不可见
+                if (startX >= endX) return;
+
+                // 使用较小的步长绘制平滑曲线
+                for (let px = startX; px <= endX; px += 10) {
+                    // 相对位置 (用于计算波形连贯性)
+                    // 使用 px - this.x 确保波形随线条移动，产生“蛇行”效果
+                    // 或者使用 px 确保波形在空间中静止，线条穿过它（这种更有“穿过空气”的感觉）
+                    let waveX = px; 
+                    
+                    let y = this.y 
+                          + Math.sin(waveX * this.frequency + time + this.phase) * this.amplitude 
+                          + Math.sin(waveX * this.frequency * 2.5 - time) * (this.amplitude * 0.5);
+                    
+                    if (px === startX) ctx.moveTo(px, y);
+                    else ctx.lineTo(px, y);
+                }
+
+                ctx.strokeStyle = colorString;
+                
+                // 关键修改：如果是水墨模式，线条非常粗且醒目
+                if (isInkMode) {
+                    ctx.lineWidth = this.baseWidth * 3; // 加粗 3 倍
+                } else {
+                    ctx.lineWidth = this.baseWidth;
+                }
+                
+                ctx.lineCap = 'round';
+                ctx.stroke();
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 400; i++) {
+                particles.push(new Particle());
+            }
+        }
+
+        function initFlowLines() {
+            flowLines = [];
+            for (let i = 0; i < 8; i++) { // 增加线条数量
+                flowLines.push(new FlowLine());
+            }
+        }
+        
+        // --- 2. 信号波形 (更平滑、有机) ---
+        function updateSignal() {
+            time += 0.05;
+            if (signalIntensity > 0.1) signalIntensity -= 0.001;
+            if (currentMood === 'signal') signalIntensity = 0.8;
+
+            let path = `M 0 100 `;
+            for (let x = 0; x <= 1920; x += 40) {
+                let noise = (Math.sin(x * 0.01 + time) + Math.sin(x * 0.03 - time * 2)) * 20;
+                let activePulse = (Math.random() - 0.5) * 100 * signalIntensity;
+                let y = 100 + noise * 0.5 + activePulse;
+                path += `S ${x - 20} ${y} ${x} ${y} `;
+            }
+            signalPath.setAttribute('d', path);
+            signalPath.setAttribute('stroke-opacity', 0.2 + signalIntensity * 0.6);
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+            
+            // 绘制粒子
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // 绘制灵动线条 
+            if (currentMood === 'ink') {
+                // 水墨风格：深黑色，极粗，高不透明度
+                flowLines.forEach(line => {
+                    line.update(); // 让线条动起来
+                    line.draw(ctx, time * 0.2, 'rgba(0, 0, 0, 0.85)', true);
+                });
+            } else if (currentMood === 'red') {
+                // 朱砂风格：暗红色，深沉
+                flowLines.forEach(line => {
+                    line.update(); // 让线条动起来
+                    line.draw(ctx, time * 0.3, 'rgba(100, 0, 0, 0.4)', false);
+                });
+            }
+            
+            updateSignal();
+            requestAnimationFrame(animateParticles);
+        }
+
+        // --- 3. 剧本与交互逻辑 ---
+        
+        const script = [
+            { text: "这里的风，有牙齿。", delay: 0, duration: 4000, mood: "wind" },
+            { text: "传说在北纬24度的腹地，风能嚼碎坚硬的花岗岩，<br>把一切文明的痕迹还原成沙砾。", delay: 1000, duration: 6000, mood: "wind" },
+            { text: "公元 2026 年，冬。", delay: 1000, duration: 4000, mood: "dark" },
+            { text: "探测器的指针在红海沿岸疯狂跳动。", delay: 500, duration: 4000, mood: "signal" },
+            { text: "频谱仪收到了一段奇怪的信号——<br>那是一串极其规律的脉冲，像是某种巨大机械的心跳。", delay: 1000, duration: 7000, mood: "signal" },
+            { text: "有人说它是海市蜃楼，<br>有人说那是通往下一个纪元的源代码。", delay: 1000, duration: 6000, mood: "signal" },
+            { text: "我们将涉沙而去，探索这心跳的本源。", delay: 1000, duration: 5000, mood: "wind" },
+            { text: "我们携带了来自东方的“密文”。", delay: 1000, duration: 5000, mood: "ink" },
+            { text: "它只是一张薄薄的纸，上面蜿蜒着黑色的线条。<br>但当它在干燥的空气中展开，<br>那种古老的韵律，竟比咒语更能安抚躁动的热浪。", delay: 1000, duration: 8000, mood: "ink" },
+            { text: "在这片色彩饱和度过载的金色沙漠里，<br>我们将展开这幅只有双色的画卷。", delay: 1000, duration: 6000, mood: "ink" },
+            { text: "我们携带了<span class='highlight-red'>红色的契约</span>。", delay: 1000, duration: 5000, mood: "red" },
+            { text: "那是用朱砂画就的图腾，不属于现在，而属于未来。", delay: 1000, duration: 6000, mood: "red" },
+            { text: "贴上这些方正的符号，用来召唤一个名为 <span class='highlight-red' style='font-size:1.2em'>“春”</span> 的季节。", delay: 1000, duration: 7000, mood: "red" },
+            { text: "万物安好。", delay: 1000, duration: 4000, mood: "red" },
+            { text: "在这个冬天，请把你的频率调至与我们同步。", delay: 2000, duration: 5000, mood: "wind" },
+            { text: "因为接下来的每一个字节，<br>都将是从“奇迹”的中心发回的、绝版的现场报告。", delay: 1000, duration: 8000, mood: "end" }
+        ];
+
+        function setMood(mood) {
+            currentMood = mood;
+            atmosphere.style.opacity = 0.8;
+            
+            if (mood === 'wind' || mood === 'default') {
+                atmosphere.style.backgroundColor = 'transparent';
+                atmosphere.style.opacity = 0;
+                document.body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
+            } else if (mood === 'dark') {
+                atmosphere.style.backgroundColor = '#000';
+                atmosphere.style.opacity = 0.6;
+            } else if (mood === 'signal') {
+                atmosphere.style.backgroundColor = '#021a1a'; // 青黑色
+                document.body.style.background = '#000';
+            } else if (mood === 'ink') {
+                atmosphere.style.backgroundColor = '#e8dfc9'; // 纸色
+                document.body.style.background = '#e8dfc9'; // 全屏变亮
+                document.body.style.color = '#111'; // 文字变黑
+                canvas.style.opacity = 0.1; // 粒子变淡
+            } else if (mood === 'red') {
+                atmosphere.style.backgroundColor = '#2b0a0a'; // 暗红
+                document.body.style.background = '#1a0000';
+                document.body.style.color = '#ffcccc'; // 文字变淡红
+                canvas.style.opacity = 0.3;
+            } else if (mood === 'end') {
+                atmosphere.style.backgroundColor = 'transparent';
+                document.body.style.background = 'radial-gradient(circle at center, #D4AF37 0%, #000 80%)'; // 金色中心
+                document.body.style.color = '#fff';
+            }
+            
+            // 字体颜色特殊处理
+            if (mood !== 'ink' && mood !== 'red') {
+                document.body.style.color = '#D4AF37';
+                canvas.style.opacity = 0.5;
+            }
+        }
+
+        async function playSequence() {
+            startBtn.style.opacity = 0;
+            startBtn.style.pointerEvents = 'none';
+            outputDiv.innerHTML = '';
+
+            for (let item of script) {
+                await new Promise(r => setTimeout(r, item.delay));
+                setMood(item.mood);
+
+                const p = document.createElement('div');
+                p.className = 'text-line';
+                p.innerHTML = item.text;
+                outputDiv.innerHTML = ''; 
+                outputDiv.appendChild(p);
+
+                void p.offsetWidth;
+                p.classList.add('active');
+
+                await new Promise(r => setTimeout(r, item.duration));
+                
+                p.style.opacity = 0;
+                p.style.transform = 'translateY(-20px)';
+            }
+            
+            await new Promise(r => setTimeout(r, 2000));
+            startBtn.textContent = "重置 / RESET";
+            startBtn.style.opacity = 1;
+            startBtn.style.pointerEvents = 'auto';
+            startBtn.onclick = () => location.reload();
+        }
+
+        startBtn.addEventListener('click', playSequence);
+
+        // --- 启动动画循环 ---
+        resize(); // 确保先初始化尺寸和线条
+        initParticles();
+        animateParticles();
+
+    </script>
+</body>
+</html>
