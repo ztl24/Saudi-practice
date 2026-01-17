@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>金色迷雾：第24维度</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+        :root {
+            --sand-gold: #D4AF37;
+            --deep-space: #050505;
+            --ink-black: #111;
+            --cinnabar: #cf2e2e;
+        }
+
+        body {
+            background-color: var(--deep-space);
+            color: var(--sand-gold);
+            font-family: 'Share Tech Mono', monospace;
+            overflow: hidden;
+            margin: 0;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            /* 深邃背景：径向渐变 */
+            background: radial-gradient(circle at center, #1a1505 0%, #000000 100%);
+            transition: background 2s ease;
+        }
+
+        /* 粒子层 */
+        #canvas-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* 信号层 */
+        #signal-layer {
+            position: absolute;
+            top: 50%;
+            left: 0;
+            width: 100%;
+            height: 200px;
+            transform: translateY(-50%);
+            z-index: 2;
+            pointer-events: none;
+            opacity: 0.5;
+        }
+
+        /* UI 层 */
+        #ui-layer {
+            position: absolute;
+            z-index: 10;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            padding: 3rem;
+            box-sizing: border-box;
+        }
+
+        /* 文本容器 */
+        .text-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            max-width: 900px;
+            text-align: center;
+            pointer-events: auto;
+            z-index: 20;
+        }
+
+        .text-line {
+            font-family: 'Noto Serif SC', serif;
+            font-size: 2rem;
+            line-height: 1.8;
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 1s ease-out;
+            margin-bottom: 2rem;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+            font-weight: 700;
+        }
+
+        .text-line.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .highlight-red {
+            color: #ff4d4d;
+            text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+        }
+
+        .highlight-ink {
+            color: #ccc;
+            font-style: italic;
+        }
+
+        /* 控制按钮 */
+        .controls {
+            pointer-events: auto;
+            cursor: pointer;
+            border: 1px solid var(--sand-gold);
+            padding: 12px 24px;
+            background: rgba(0, 0, 0, 0.6);
+            color: var(--sand-gold);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1rem;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(4px);
+        }
+
+        .controls:hover {
+            background: var(--sand-gold);
+            color: black;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+
+        /* 氛围覆盖层 */
+        .atmosphere-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            opacity: 0;
+            transition: opacity 2s ease, background-color 2s ease;
+            pointer-events: none;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="atmosphere" class="atmosphere-overlay"></div>
+    <canvas id="canvas-layer"></canvas>
+
+    <svg id="signal-layer" viewBox="0 0 1920 200" preserveAspectRatio="none">
+        <path id="signal-path" d="" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" fill="none" />
+    </svg>
+
+    <div id="ui-layer">
+        <div class="flex justify-between w-full opacity-70">
+            <div class="text-sm tracking-widest font-mono">
+                SIGNAL: LISTENING...<br>
+                FREQ: 24.000 Hz
+            </div>
+            <div class="text-sm tracking-widest font-mono text-right">
+                LOC: 24°N<br>
+                EST: 2026
+            </div>
+        </div>
+
+        <div class="text-container" id="text-output"></div>
+
+        <div class="w-full flex justify-center pb-10">
+            <button id="start-btn" class="controls">接入信号 / CONNECT</button>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+        const signalPath = document.getElementById('signal-path');
+        const outputDiv = document.getElementById('text-output');
+        const startBtn = document.getElementById('start-btn');
+        const atmosphere = document.getElementById('atmosphere');
+
+        let width, height;
+        let particles = [];
+        let flowLines = [];
+        let time = 0;
+        let signalIntensity = 0;
+        let currentMood = 'default';
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            initFlowLines();
+        }
+        window.addEventListener('resize', resize);
+
+        // --- 1. 粒子系统 (向中心缓慢汇聚) ---
+        class Particle {
+            constructor(isInitial = false) {
+                this.reset(isInitial);
+            }
+
+            reset(isInitial = false) {
+                this.z = Math.random();
+                this.speed = (this.z * 0.8) + 0.2;
+
+                if (isInitial) {
+                    this.x = Math.random() * width;
+                    this.y = Math.random() * height;
+                } else {
+                    const angle = Math.random() * Math.PI * 2;
+                    const r = Math.max(width, height) * 0.6 + Math.random() * 200;
+                    this.x = width / 2 + Math.cos(angle) * r;
+                    this.y = height / 2 + Math.sin(angle) * r;
+                }
+
+                this.size = (this.z * 2.0) + 0.5;
+                this.baseOpacity = (this.z * 0.7) + 0.1;
+                this.opacity = this.baseOpacity;
+
+                const gold = [212, 175, 55];
+                this.colorRGB = gold;
+            }
+
+            update() {
+                const centerX = width / 2;
+                const centerY = height / 2;
+
+                const dx = centerX - this.x;
+                const dy = centerY - this.y;
+                const dist = Math.hypot(dx, dy);
+
+                if (dist < 10) {
+                    this.reset();
+                    return;
+                }
+
+                const vx = (dx / dist) * this.speed;
+                const vy = (dy / dist) * this.speed;
+
+                this.x += vx;
+                this.y += vy;
+
+                if (dist < 200) {
+                    this.opacity = this.baseOpacity * (dist / 200);
+                } else {
+                    this.opacity = this.baseOpacity;
+                }
+            }
+
+            draw() {
+                ctx.fillStyle = `rgba(${this.colorRGB[0]}, ${this.colorRGB[1]}, ${this.colorRGB[2]}, ${this.opacity})`;
+
+                if (this.z < 0.3) {
+                    ctx.shadowBlur = 0;
+                } else {
+                    ctx.shadowBlur = this.z * 5;
+                    ctx.shadowColor = `rgba(${this.colorRGB[0]}, ${this.colorRGB[1]}, ${this.colorRGB[2]}, ${this.opacity})`;
+                }
+
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        // --- 2. 灵动线条系统 (修改：慢速、弯曲、变形) ---
+        class FlowLine {
+            constructor() {
+                this.reset();
+            }
+
+            reset() {
+                // 1. 位置初始化：四周
+                const side = Math.floor(Math.random() * 4);
+                const buffer = 150;
+                if (side === 0) { this.x = Math.random() * width; this.y = -buffer; }
+                else if (side === 1) { this.x = width + buffer; this.y = Math.random() * height; }
+                else if (side === 2) { this.x = Math.random() * width; this.y = height + buffer; }
+                else { this.x = -buffer; this.y = Math.random() * height; }
+
+                // 2. 基础目标方向 (指向中心，但会偏离)
+                const centerX = width / 2;
+                const centerY = height / 2;
+                this.baseAngle = Math.atan2(centerY - this.y, centerX - this.x);
+                this.angle = this.baseAngle;
+
+                // 3. 速度：大幅减慢 (从 6-10 降到 1.5-2.5)
+                this.speed = 3 + Math.random() * 1.0;
+
+                // 4. 曲线运动参数
+                // 随机的相位偏移，让每条线的扭动不同步
+                this.noiseOffset = Math.random() * 1000;
+                // 转向频率，决定弯曲的程度
+                this.turnSpeed = 0.0002 + Math.random() * 0.0002;
+
+                // 5. 轨迹长度：为了看起来长，增加点数
+                this.history = [];
+                this.maxHistory = 100 + Math.random() * 50;
+
+                // 6. 基础粗细
+                this.baseWidth = 8 + Math.random() * 6;
+                // 宽度呼吸频率
+                this.widthFreq = 0.05 + Math.random() * 0.05;
+            }
+
+            update() {
+                // 时间因子
+                const t = Date.now() * 0.0004;
+
+                // 核心：计算弯曲路径
+                // 使用正弦波叠加来模拟“游动”的蛇行轨迹
+                // 在基础方向上叠加一个随时间变化的偏转角
+                const wiggle = Math.sin(t * 2 + this.noiseOffset) * 0.3;
+
+                // 缓慢调整基础角度指向中心 (Steering behavior)，确保最终会流向中心
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const targetAngle = Math.atan2(centerY - this.y, centerX - this.x);
+
+                // 角度平滑插值，让它慢慢转向中心
+                let diff = targetAngle - this.baseAngle;
+                while (diff > Math.PI) diff -= Math.PI * 2;
+                while (diff < -Math.PI) diff += Math.PI * 2;
+                this.baseAngle += diff * 0.01; // 极慢的转向修正
+
+                // 最终运动角度 = 修正后的朝向中心角度 + 波动偏移
+                this.angle = this.baseAngle + wiggle;
+
+                // 移动
+                this.x += Math.cos(this.angle) * this.speed;
+                this.y += Math.sin(this.angle) * this.speed;
+
+                // 计算当前时刻的宽度变形系数 (0.5 ~ 1.5)
+                const widthMorph = 1.0 + Math.sin(t * 3 + this.noiseOffset * 2) * 0.4;
+
+                // 记录位置和形态
+                this.history.push({
+                    x: this.x,
+                    y: this.y,
+                    widthScale: widthMorph
+                });
+
+                if (this.history.length > this.maxHistory) {
+                    this.history.shift();
+                }
+
+                // 边界检查
+                const distToCenter = Math.hypot(this.x - width / 2, this.y - height / 2);
+                if (distToCenter < 30) { this.reset(); }
+                if (this.x < -300 || this.x > width + 300 || this.y < -300 || this.y > height + 300) { this.reset(); }
+            }
+
+            draw(ctx) {
+                if (this.history.length < 2) return;
+                ctx.lineCap = 'round';
+
+                // 绘制分段线
+                for (let i = 0; i < this.history.length - 1; i++) {
+                    const p1 = this.history[i];
+                    const p2 = this.history[i + 1];
+
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+
+                    // 进度 (0 -> 1)
+                    const progress = i / this.history.length;
+
+                    // 动态宽度：基础宽 * 尾部渐变 * 实时变形系数
+                    // p1.widthScale 是该点生成时的形态记录，保留了"当时"的形状
+                    let w = this.baseWidth * progress * (p1.widthScale || 1);
+
+                    ctx.lineWidth = w;
+
+                    let alpha = progress;
+                    // 头部不透明，尾部透明
+                    alpha = Math.min(1, alpha * 1.5);
+                    ctx.strokeStyle = `rgba(0, 0, 0, ${alpha})`;
+
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function initParticles() {
+            particles = [];
+            for (let i = 0; i < 400; i++) {
+                particles.push(new Particle(true));
+            }
+        }
+
+        function initFlowLines() {
+            flowLines = [];
+            for (let i = 0; i < 6; i++) { // 稍微增加几条，因为速度慢了，画面可能空
+                flowLines.push(new FlowLine());
+            }
+        }
+
+        // --- 3. 信号波形 ---
+        function updateSignal() {
+            time += 0.05;
+            if (signalIntensity > 0.1) signalIntensity -= 0.001;
+            if (currentMood === 'signal') signalIntensity = 0.8;
+
+            let path = `M 0 100 `;
+            for (let x = 0; x <= 1920; x += 40) {
+                let noise = (Math.sin(x * 0.01 + time) + Math.sin(x * 0.03 - time * 2)) * 20;
+                let activePulse = (Math.random() - 0.5) * 100 * signalIntensity;
+                let y = 100 + noise * 0.5 + activePulse;
+                path += `S ${x - 20} ${y} ${x} ${y} `;
+            }
+            signalPath.setAttribute('d', path);
+            signalPath.setAttribute('stroke-opacity', 0.2 + signalIntensity * 0.6);
+        }
+
+        // --- 4. 动画循环 ---
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            // 绘制金色粒子
+            particles.forEach(p => {
+                p.update();
+                p.draw();
+            });
+
+            // 绘制灵动线条 (仅在水墨模式下)
+            if (currentMood === 'ink') {
+                flowLines.forEach(line => {
+                    line.update();
+                    line.draw(ctx);
+                });
+            }
+
+            updateSignal();
+            requestAnimationFrame(animateParticles);
+        }
+
+        // --- 5. 剧本与交互逻辑 ---
+
+        const script = [
+            { text: "这里的风，有牙齿。", delay: 0, duration: 4000, mood: "wind" },
+            { text: "传说在北纬24度的腹地，风能嚼碎坚硬的花岗岩，<br>把一切文明的痕迹还原成沙砾。", delay: 1000, duration: 6000, mood: "wind" },
+            { text: "公元 2026 年，冬。", delay: 1000, duration: 4000, mood: "dark" },
+            { text: "探测器的指针在红海沿岸疯狂跳动。", delay: 500, duration: 4000, mood: "signal" },
+            { text: "频谱仪收到了一段奇怪的信号——<br>那是一串极其规律的脉冲，像是某种巨大机械的心跳。", delay: 1000, duration: 7000, mood: "signal" },
+            { text: "有人说它是海市蜃楼，<br>有人说那是通往下一个纪元的源代码。", delay: 1000, duration: 6000, mood: "signal" },
+            { text: "我们将涉沙而去，探索这心跳的本源。", delay: 1000, duration: 5000, mood: "wind" },
+            { text: "我们携带了<span class='highlight-red'>红色的契约</span>。", delay: 1000, duration: 5000, mood: "red" },
+            { text: "那是用朱砂画就的图腾，不是属于现在，而是属于未来。", delay: 1000, duration: 6000, mood: "red" },
+            { text: "贴上这些方正的符号，用来召唤一个名为 <span class='highlight-red' style='font-size:1.2em'>“春”</span> 的季节。", delay: 1000, duration: 7000, mood: "red" },
+            { text: "万物安好", delay: 1000, duration: 4000, mood: "red" },
+            { text: "在这个冬天，请把你的频率调至与我们同步。", delay: 2000, duration: 5000, mood: "wind" },
+            { text: "因为接下来的每一个字节，<br>都将是从“奇迹”的中心发回的、绝版的现场报告。", delay: 1000, duration: 8000, mood: "end" }
+        ];
+
+        function setMood(mood) {
+            currentMood = mood;
+            atmosphere.style.opacity = 0.8;
+
+            if (mood === 'wind' || mood === 'default') {
+                atmosphere.style.backgroundColor = 'transparent';
+                atmosphere.style.opacity = 0;
+                document.body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
+            } else if (mood === 'dark') {
+                atmosphere.style.backgroundColor = '#000';
+                atmosphere.style.opacity = 0.6;
+            } else if (mood === 'signal') {
+                atmosphere.style.backgroundColor = '#021a1a'; // 青黑色
+                document.body.style.background = '#000';
+            } else if (mood === 'ink') {
+                atmosphere.style.backgroundColor = '#e8dfc9'; // 纸色
+                document.body.style.background = '#e8dfc9'; // 全屏变亮
+                document.body.style.color = '#111'; // 文字变黑
+                canvas.style.opacity = 0.1; // 粒子变淡
+            } else if (mood === 'red') {
+                atmosphere.style.backgroundColor = '#2b0a0a'; // 暗红
+                document.body.style.background = '#1a0000';
+                document.body.style.color = '#ffcccc'; // 文字变淡红
+                canvas.style.opacity = 0.3;
+            } else if (mood === 'end') {
+                atmosphere.style.backgroundColor = 'transparent';
+                document.body.style.background = 'radial-gradient(circle at center, #D4AF37 0%, #000 80%)'; // 金色中心
+                document.body.style.color = '#fff';
+            }
+
+            // 字体颜色特殊处理
+            if (mood !== 'ink' && mood !== 'red') {
+                document.body.style.color = '#D4AF37';
+                canvas.style.opacity = 0.5;
+            }
+        }
+
+        async function playSequence() {
+            startBtn.style.opacity = 0;
+            startBtn.style.pointerEvents = 'none';
+            outputDiv.innerHTML = '';
+
+            for (let item of script) {
+                await new Promise(r => setTimeout(r, item.delay));
+                setMood(item.mood);
+
+                const p = document.createElement('div');
+                p.className = 'text-line';
+                p.innerHTML = item.text;
+                outputDiv.innerHTML = '';
+                outputDiv.appendChild(p);
+
+                void p.offsetWidth;
+                p.classList.add('active');
+
+                await new Promise(r => setTimeout(r, item.duration));
+
+                p.style.opacity = 0;
+                p.style.transform = 'translateY(-20px)';
+            }
+
+            await new Promise(r => setTimeout(r, 2000));
+            startBtn.textContent = "重置 / RESET";
+            startBtn.style.opacity = 1;
+            startBtn.style.pointerEvents = 'auto';
+            startBtn.onclick = () => location.reload();
+        }
+
+        startBtn.addEventListener('click', playSequence);
+
+        // --- 启动动画循环 ---
+        resize();
+        initParticles();
+        animateParticles();
+
+    </script>
+</body>
+
+</html>
