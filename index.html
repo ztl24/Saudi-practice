@@ -430,7 +430,8 @@
             }
         });
 
-        async function playSequence() {
+        async function playSequence(e) {
+            if (e) e.preventDefault();
             // UI 状态切换
             startBtn.style.opacity = 0;
             startBtn.style.pointerEvents = 'none';
@@ -471,7 +472,6 @@
             startBtn.textContent = "再次接入 / RECONNECT";
             startBtn.style.opacity = 1;
             startBtn.style.pointerEvents = 'auto';
-            startBtn.onclick = playSequence;
             clickZone.style.display = 'none';
             hintText.style.opacity = 0;
         }
