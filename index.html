@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金色迷雾：第24维度</title>
+    <title>金色迷雾：24.7频段</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -29,7 +29,8 @@
             justify-content: center;
             background: radial-gradient(circle at center, #1a1505 0%, #000000 100%);
             transition: background 1.5s ease, color 1.5s ease;
-            user-select: none; /* 防止双击选中文本 */
+            user-select: none;
+            /* 防止双击选中文本 */
         }
 
         /* 粒子层 */
@@ -80,14 +81,17 @@
             width: 85%;
             max-width: 1000px;
             text-align: center;
-            pointer-events: auto; /* 允许点击 */
+            pointer-events: auto;
+            /* 允许点击 */
             z-index: 20;
-            cursor: pointer; /* 提示可点击 */
+            cursor: pointer;
+            /* 提示可点击 */
         }
 
         .text-line {
             font-family: 'Noto Serif SC', serif;
-            font-size: clamp(1.5rem, 4vw, 2.2rem); /* 响应式字体 */
+            font-size: clamp(1.5rem, 4vw, 2.2rem);
+            /* 响应式字体 */
             line-height: 1.8;
             opacity: 0;
             transform: translateY(20px);
@@ -112,7 +116,7 @@
             color: #ff4d4d;
             text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
         }
-        
+
         .highlight-ink {
             font-weight: bold;
             color: #111;
@@ -139,7 +143,7 @@
             color: black;
             box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
         }
-        
+
         /* 点击提示 */
         .click-hint {
             position: absolute;
@@ -149,7 +153,7 @@
             font-size: 0.8rem;
             opacity: 0;
             transition: opacity 1s;
-            color: rgba(255,255,255,0.4);
+            color: rgba(255, 255, 255, 0.4);
             letter-spacing: 2px;
             pointer-events: none;
         }
@@ -190,7 +194,8 @@
             </div>
         </div>
 
-        <div id="click-zone" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:15; display:none;"></div>
+        <div id="click-zone" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:15; display:none;">
+        </div>
 
         <div class="text-container" id="text-output"></div>
         <div class="click-hint" id="hint-text">点击任意处跳过 / CLICK TO SKIP</div>
@@ -215,9 +220,9 @@
         let time = 0;
         let signalIntensity = 0;
         let currentMood = 'default';
-        
+
         // 用于跳过功能的控制变量
-        let skipTrigger = null; 
+        let skipTrigger = null;
 
         function resize() {
             width = canvas.width = window.innerWidth;
@@ -297,7 +302,7 @@
                 signalPath.setAttribute('stroke-opacity', 0);
                 return;
             }
-            
+
             if (signalIntensity > 0.1) signalIntensity -= 0.005;
             if (currentMood === 'signal') signalIntensity = 0.8;
 
@@ -310,12 +315,12 @@
             }
             signalPath.setAttribute('d', path);
             signalPath.setAttribute('stroke-opacity', 0.2 + signalIntensity * 0.6);
-            
+
             // 红色模式波形变红
-            if(currentMood === 'red') {
-                 signalPath.setAttribute('stroke', 'rgba(207, 46, 46, 0.4)');
+            if (currentMood === 'red') {
+                signalPath.setAttribute('stroke', 'rgba(207, 46, 46, 0.4)');
             } else {
-                 signalPath.setAttribute('stroke', 'rgba(212, 175, 55, 0.3)');
+                signalPath.setAttribute('stroke', 'rgba(212, 175, 55, 0.3)');
             }
         }
 
@@ -336,7 +341,7 @@
             { text: "这里本该是荒漠，<br>但频谱仪却收到了一段奇怪的信号——<br>那是一串极其规律的脉冲，<br>像是某种巨大机械的心跳。", mood: "signal", duration: 8000 },
             { text: "有人说它是海市蜃楼，<br>有人说那是通往下一个纪元的源代码。", mood: "signal", duration: 6000 },
             { text: "我们将涉沙而去，<br>探索这心跳的本源和力量。", mood: "wind", duration: 5000 },
-            
+
             // 水墨篇章
             { text: "我们携带了<span style='font-weight:bold; color:#000;'>纸上的烟云</span>。", mood: "ink", duration: 5000 },
             { text: "它由松木燃烧后的灰烬与水调和而成。<br>表面上看，那只是黑与白的潦草涂抹，<br>但千万别眨眼——<br>那里面栖居着东方的五岳与长河。", mood: "ink", duration: 9000 },
@@ -367,7 +372,7 @@
         function setMood(mood) {
             currentMood = mood;
             const body = document.body;
-            
+
             // 默认重置
             body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
             body.style.color = '#D4AF37';
@@ -377,7 +382,7 @@
             if (mood === 'dark' || mood === 'signal') {
                 atmosphere.style.backgroundColor = 'rgba(0,20,20,0.8)';
                 atmosphere.style.opacity = 0.5;
-            } 
+            }
             else if (mood === 'ink') {
                 // 水墨模式：白底黑字
                 body.style.background = '#f0f0f0'; // 宣纸白
@@ -385,14 +390,14 @@
                 atmosphere.style.backgroundColor = '#fff';
                 atmosphere.style.opacity = 0.7;
                 canvas.style.opacity = 0.4; // 粒子变淡
-            } 
+            }
             else if (mood === 'red') {
                 // 红色模式：红黑氛围
                 body.style.background = '#1a0505';
                 body.style.color = '#ffcccc';
                 atmosphere.style.backgroundColor = '#4a0000';
                 atmosphere.style.opacity = 0.4;
-            } 
+            }
             else if (mood === 'gold-mist') {
                 body.style.background = 'radial-gradient(circle at center, #443300 0%, #000 100%)';
                 atmosphere.style.backgroundColor = '#ffd700';
@@ -442,22 +447,22 @@
                 p.className = 'text-line';
                 p.innerHTML = item.text;
                 outputDiv.appendChild(p);
-                
+
                 // 强制重绘以触发动画
-                void p.offsetWidth; 
+                void p.offsetWidth;
                 p.classList.add('active');
 
                 // 2. 等待阅读 (可点击跳过)
                 // 给一点小延迟防止点击连发导致的瞬间跳过
-                await new Promise(r => setTimeout(r, 100)); 
+                await new Promise(r => setTimeout(r, 100));
                 await waitWithSkip(item.duration);
 
                 // 3. 文本淡出
                 p.classList.remove('active');
                 p.classList.add('exit');
-                
+
                 // 淡出时间较短，一般不需跳过，但为了流畅体验，这里设定固定短延迟
-                await new Promise(r => setTimeout(r, 600)); 
+                await new Promise(r => setTimeout(r, 600));
                 outputDiv.innerHTML = ''; // 清理DOM
             }
 
