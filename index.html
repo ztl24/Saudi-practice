@@ -186,7 +186,7 @@
         <div class="flex justify-between w-full opacity-70">
             <div class="text-sm tracking-widest font-mono">
                 SIGNAL:DET<br>
-                FREQ:24.7 Hz
+                FREQ:24.7Hz
             </div>
             <div class="text-sm tracking-widest font-mono text-right">
                 LOC:24.7°N<br>
@@ -240,20 +240,15 @@
                 this.z = Math.random();
                 this.speed = (this.z * 0.5) + 0.1;
 
-                if (isInitial) {
-                    // 初始分布避开中心，防止聚集
-                    let d = 0;
-                    do {
-                        this.x = Math.random() * width;
-                        this.y = Math.random() * height;
-                        d = Math.hypot(this.x - width / 2, this.y - height / 2);
-                    } while (d < 300);
-                } else {
-                    const angle = Math.random() * Math.PI * 2;
-                    const r = Math.max(width, height) * 0.7;
-                    this.x = width / 2 + Math.cos(angle) * r;
-                    this.y = height / 2 + Math.sin(angle) * r;
-                }
+                const angle = Math.random() * Math.PI * 2;
+                const maxR = Math.max(width, height) * 0.7;
+
+                // 如果是初始状态，随机分布在路径上（模拟稳态），否则从边缘生成
+                // 这样一来，初始画面就是均匀向心流动的，不会有"一坨"形状
+                const r = isInitial ? Math.random() * maxR : maxR;
+
+                this.x = width / 2 + Math.cos(angle) * r;
+                this.y = height / 2 + Math.sin(angle) * r;
 
                 this.size = (this.z * 2.5) + 0.5;
                 this.baseOpacity = (this.z * 0.6) + 0.1;
