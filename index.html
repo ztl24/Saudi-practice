@@ -185,12 +185,12 @@
     <div id="ui-layer">
         <div class="flex justify-between w-full opacity-70">
             <div class="text-sm tracking-widest font-mono">
-                SIGNAL: DETECTED<br>
-                FREQ: 24.7 Hz
+                SIGNAL:DET<br>
+                FREQ:24.7 Hz
             </div>
             <div class="text-sm tracking-widest font-mono text-right">
-                LOC: 24.7°N<br>
-                EST: 2026
+                LOC:24.7°N<br>
+                UTC+8:2026
             </div>
         </div>
 
@@ -241,8 +241,13 @@
                 this.speed = (this.z * 0.5) + 0.1;
 
                 if (isInitial) {
-                    this.x = Math.random() * width;
-                    this.y = Math.random() * height;
+                    // 初始分布避开中心，防止聚集
+                    let d = 0;
+                    do {
+                        this.x = Math.random() * width;
+                        this.y = Math.random() * height;
+                        d = Math.hypot(this.x - width / 2, this.y - height / 2);
+                    } while (d < 300);
                 } else {
                     const angle = Math.random() * Math.PI * 2;
                     const r = Math.max(width, height) * 0.7;
