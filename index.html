@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金色迷雾：24.7频段</title>
+    <title>金色迷雾：24.7频段-金色迷雾淡入淡出问题</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Share+Tech+Mono&display=swap');
@@ -399,9 +399,9 @@
                 atmosphere.style.opacity = 0.4;
             }
             else if (mood === 'gold-mist') {
-                body.style.background = 'radial-gradient(circle at center, #443300 0%, #000 100%)';
-                atmosphere.style.backgroundColor = '#ffd700';
-                atmosphere.style.opacity = 0.1;
+                // 改用氛围层颜色过渡，避免背景渐变切换的突兀感
+                atmosphere.style.backgroundColor = 'rgba(85, 68, 0, 0.8)'; // 深金色氛围
+                atmosphere.style.opacity = 0.6;
             }
         }
 
