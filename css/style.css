@@ -5,6 +5,7 @@
     --sand-gold-dim: #D4AF3780;
     --deep-space: #050505;
     --node-bg: rgba(0, 0, 0, 0.7);
+    --locked-gray: #555;
 }
 
 body {
@@ -25,7 +26,38 @@ body {
     position: relative;
 }
 
-/* 遮罩层：让背景稍微暗一点，突显节点 */
+/* 游戏标题 */
+.game-title {
+    position: absolute;
+    top: 5%;
+    width: 100%;
+    text-align: center;
+    font-size: 3rem;
+    font-weight: 700;
+    color: transparent;
+    background: linear-gradient(to bottom, #fff, #D4AF37);
+    -webkit-background-clip: text;
+    background-clip: text;
+    text-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+    z-index: 50;
+    pointer-events: none;
+    letter-spacing: 5px;
+    animation: titleFloat 3s ease-in-out infinite;
+}
+
+@keyframes titleFloat {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+/* 遮罩层 */
 .atmosphere-overlay {
     position: absolute;
     top: 0;
@@ -37,7 +69,7 @@ body {
     pointer-events: none;
 }
 
-/* 粒子层作为氛围 */
+/* 粒子层 */
 #canvas-layer {
     position: absolute;
     top: 0;
@@ -47,7 +79,46 @@ body {
     z-index: 1;
     pointer-events: none;
     opacity: 0.6;
-    /* 稍微减淡 */
+}
+
+/* 漂浮装饰层 */
+#floating-glyphs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.glyph {
+    position: absolute;
+    color: rgba(212, 175, 55, 0.2);
+    font-size: 2rem;
+    animation: floatUp 15s linear infinite;
+    user-select: none;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(110vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.5;
+    }
+
+    80% {
+        opacity: 0.5;
+    }
+
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+    }
 }
 
 /* 地图容器 */
@@ -73,10 +144,11 @@ body {
 
 .path-line {
     stroke: var(--sand-gold);
-    stroke-width: 2px;
-    stroke-dasharray: 10, 5;
-    stroke-opacity: 0.6;
-    animation: dashMove 20s linear infinite;
+    stroke-width: 3px;
+    stroke-dasharray: 15, 10;
+    stroke-opacity: 0.5;
+    animation: dashMove 60s linear infinite;
+    filter: drop-shadow(0 0 5px var(--sand-gold));
 }
 
 @keyframes dashMove {
@@ -85,11 +157,64 @@ body {
     }
 
     to {
-        stroke-dashoffset: 100;
+        stroke-dashoffset: 1000;
     }
 }
 
-/* 关卡节点 */
+/* 玩家标记 */
+#player-marker {
+    position: absolute;
+    transform: translate(-50%, -100%);
+    /* 站在点上方 */
+    z-index: 30;
+    pointer-events: none;
+    transition: all 1s ease;
+}
+
+.marker-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 10px gold);
+    animation: bounce 2s infinite;
+}
+
+@keyframes bounce {
+
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-15px);
+    }
+}
+
+.marker-pulse {
+    position: absolute;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 40px;
+    height: 15px;
+    background: radial-gradient(ellipse, rgba(212, 175, 55, 0.6), transparent 70%);
+    animation: shadowPulse 2s infinite;
+}
+
+@keyframes shadowPulse {
+
+    0%,
+    100% {
+        opacity: 0.6;
+        transform: translateX(-50%) scale(1);
+    }
+
+    50% {
+        opacity: 0.3;
+        transform: translateX(-50%) scale(0.6);
+    }
+}
+
+/* 关卡节点基础样式 */
 .level-node {
     position: absolute;
     transform: translate(-50%, -50%);
@@ -102,7 +227,7 @@ body {
 }
 
 .level-node:hover {
-    transform: translate(-50%, -50%) scale(1.1);
+    transform: translate(-50%, -50%) scale(1.15);
 }
 
 .node-circle {
@@ -120,19 +245,25 @@ body {
     color: #4a3c00;
     z-index: 2;
     transition: all 0.3s ease;
+    position: relative;
 }
 
-.level-node:hover .node-circle {
-    box-shadow: 0 0 25px #fff, 0 0 10px var(--sand-gold);
-    background: radial-gradient(circle at 30% 30%, #fff, #ffd700);
+/* 状态图标 */
+.status-icon {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    font-size: 1.2rem;
+    filter: drop-shadow(0 2px 2px black);
+    z-index: 3;
 }
 
 .node-label {
-    margin-top: 10px;
-    padding: 5px 10px;
-    background: rgba(0, 0, 0, 0.8);
+    margin-top: 15px;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.85);
     border: 1px solid var(--sand-gold);
-    border-radius: 4px;
+    border-radius: 8px;
     text-align: center;
     font-size: 0.9rem;
     color: #fff;
@@ -140,10 +271,68 @@ body {
     text-shadow: 0 0 5px black;
     opacity: 0.9;
     transition: all 0.3s;
+    backdrop-filter: blur(5px);
 }
 
-.level-node:hover .node-label {
+/* --- 状态样式差异化 --- */
+
+/* 1. 已通关 (Cleared) */
+.level-node.cleared .node-circle {
+    background: radial-gradient(circle at 30% 30%, #4CAF50, #2E7D32);
+    /* 绿色基调 */
+    border-color: #81C784;
+    box-shadow: 0 0 20px #4CAF50;
+    color: white;
+}
+
+.level-node.cleared .node-label {
+    border-color: #4CAF50;
+    color: #E8F5E9;
+}
+
+/* 2. 当前关卡 (Current) */
+.level-node.current .node-circle {
+    background: radial-gradient(circle at 30% 30%, #fff, #D4AF37);
+    box-shadow: 0 0 30px #D4AF37, 0 0 10px #fff;
+    animation: pulseNode 2s infinite;
+}
+
+@keyframes pulseNode {
+    0% {
+        box-shadow: 0 0 20px #D4AF37;
+    }
+
+    50% {
+        box-shadow: 0 0 40px #D4AF37, 0 0 20px #fff;
+    }
+
+    100% {
+        box-shadow: 0 0 20px #D4AF37;
+    }
+}
+
+/* 3. 未解锁 (Locked) */
+.level-node.locked {
+    cursor: not-allowed;
+    filter: grayscale(0.8);
+}
+
+.level-node.locked .node-circle {
+    background: #333;
+    border-color: #666;
+    box-shadow: none;
+    color: #888;
+}
+
+.level-node.locked .node-label {
+    background: rgba(0, 0, 0, 0.9);
+    border-color: #555;
+    color: #888;
+}
+
+.level-node:not(.locked):hover .node-label {
     background: var(--sand-gold);
     color: #000;
     font-weight: bold;
+    transform: translateY(5px);
 }

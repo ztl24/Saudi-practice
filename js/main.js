@@ -75,18 +75,46 @@ function animate() {
     requestAnimationFrame(animate);
 }
 
+// --- 3. 漂浮装饰 (阿拉伯风情) ---
+function initFloatingGlyphs() {
+    const container = document.getElementById('floating-glyphs');
+    const glyphs = ['★', '✦', '✧', '☪', '☾', '☀', '◈', '◊']; // 几何与天文符号
+    // 也可以加入阿拉伯字母，如: ['ا', 'ب', 'ج', 'د', 'ه', 'و', 'ز', 'ح']
+
+    const count = 15; // 装饰数量
+
+    for (let i = 0; i < count; i++) {
+        const span = document.createElement('span');
+        span.className = 'glyph';
+        span.innerText = glyphs[Math.floor(Math.random() * glyphs.length)];
+
+        // 随机属性
+        span.style.left = Math.random() * 100 + '%';
+        span.style.fontSize = (Math.random() * 1.5 + 1) + 'rem';
+        span.style.animationDuration = (Math.random() * 10 + 10) + 's'; // 10-20s
+        span.style.animationDelay = (Math.random() * -20) + 's'; // 负延迟让动画一开始就铺满
+
+        container.appendChild(span);
+    }
+}
+
 // 启动
 resize();
 initParticles();
+initFloatingGlyphs();
 animate();
 
-// --- 2. 交互逻辑 ---
+// --- 4. 交互逻辑 ---
 document.querySelectorAll('.level-node').forEach(node => {
     node.addEventListener('click', () => {
+        if (node.classList.contains('locked')) {
+            alert("🔒 该区域尚未解锁！\n请先完成某某前置任务...");
+            return;
+        }
+
         const label = node.getAttribute('data-label');
         console.log(`Clicked level: ${label}`);
-        // 这里可以添加跳转逻辑，例如：
-        // window.location.href = `level-${node.querySelector('.node-circle').innerText}.html`;
-        alert(`进入关卡: ${label}`);
+        // 模拟跳转或显示详情
+        alert(`🚀 准备启程前往：${label}`);
     });
 });
