@@ -1,0 +1,163 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;700&family=Share+Tech+Mono&display=swap');
+
+:root {
+    --sand-gold: #D4AF37;
+    --deep-space: #050505;
+    --ink-black: #111;
+    --cinnabar: #cf2e2e;
+}
+
+body {
+    background-color: var(--deep-space);
+    color: var(--sand-gold);
+    font-family: 'Share Tech Mono', monospace;
+    overflow: hidden;
+    margin: 0;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: radial-gradient(circle at center, #1a1505 0%, #000000 100%);
+    transition: background 1.5s ease, color 1.5s ease;
+    user-select: none;
+    /* 防止双击选中文本 */
+}
+
+/* 粒子层 */
+#canvas-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    transition: opacity 1.5s ease;
+}
+
+/* 信号层 */
+#signal-layer {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 1s ease;
+}
+
+/* UI 层 */
+#ui-layer {
+    position: absolute;
+    z-index: 10;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3rem;
+    box-sizing: border-box;
+}
+
+/* 文本容器 */
+.text-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 1000px;
+    text-align: center;
+    pointer-events: auto;
+    /* 允许点击 */
+    z-index: 20;
+    cursor: pointer;
+    /* 提示可点击 */
+}
+
+.text-line {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    /* 响应式字体 */
+    line-height: 1.8;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+}
+
+.text-line.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.text-line.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+}
+
+.highlight-red {
+    color: #ff4d4d;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+.highlight-ink {
+    font-weight: bold;
+    color: #111;
+}
+
+/* 控制按钮 */
+.controls {
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid var(--sand-gold);
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--sand-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 1rem;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(4px);
+    z-index: 30;
+}
+
+.controls:hover {
+    background: var(--sand-gold);
+    color: black;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+/* 点击提示 */
+.click-hint {
+    position: absolute;
+    bottom: 100px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 1s;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    pointer-events: none;
+}
+
+/* 氛围覆盖层 */
+.atmosphere-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    opacity: 0;
+    transition: opacity 2s ease, background-color 2s ease;
+    pointer-events: none;
+}
