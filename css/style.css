@@ -44,7 +44,7 @@ body {
     height: 100%;
     z-index: 1;
     pointer-events: none;
-    mix-blend-mode: screen;
+    /* mix-blend-mode: screen; removed to allow black ink logic */
 }
 
 /* 漂浮装饰层 */

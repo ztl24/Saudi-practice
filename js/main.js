@@ -55,7 +55,7 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
-// --- 1. 粒子系统 (增强版，可变色) ---
+// --- 1. 粒子系统 (恢复为 animation.html 原版) ---
 class Particle {
     constructor() {
         this.reset(true);
@@ -69,6 +69,7 @@ class Particle {
         const maxR = Math.max(width, height) * 0.7;
         const r = isInitial ? Math.random() * maxR : maxR;
 
+        // 默认位置 (圆周分布)
         this.x = width / 2 + Math.cos(angle) * r;
         this.y = height / 2 + Math.sin(angle) * r;
 
