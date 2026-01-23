@@ -1,20 +1,14 @@
 const canvas = document.getElementById('canvas-layer');
 const ctx = canvas.getContext('2d');
-const signalPath = document.getElementById('signal-path');
-const outputDiv = document.getElementById('text-output');
-const startBtn = document.getElementById('start-btn');
+// Remove old UI references that no longer exist to prevent errors
+// const signalPath = document.getElementById('signal-path');
+// const outputDiv = document.getElementById('text-output');
+// const startBtn = document.getElementById('start-btn');
 const atmosphere = document.getElementById('atmosphere');
-const clickZone = document.getElementById('click-zone');
-const hintText = document.getElementById('hint-text');
 
 let width, height;
 let particles = [];
-let time = 0;
-let signalIntensity = 0;
 let currentMood = 'default';
-
-// 用于跳过功能的控制变量
-let skipTrigger = null;
 
 function resize() {
     width = canvas.width = window.innerWidth;
@@ -22,7 +16,7 @@ function resize() {
 }
 window.addEventListener('resize', resize);
 
-// --- 1. 粒子系统 (增强版，可变色) ---
+// --- 1. 粒子系统 (简化版作为背景) ---
 class Particle {
     constructor() {
         this.reset(true);
@@ -30,20 +24,18 @@ class Particle {
 
     reset(isInitial = false) {
         this.z = Math.random();
-        this.speed = (this.z * 0.5) + 0.1;
+        this.speed = (this.z * 0.2) + 0.05; // 减慢速度
 
         const angle = Math.random() * Math.PI * 2;
         const maxR = Math.max(width, height) * 0.7;
 
-        // 如果是初始状态，随机分布在路径上（模拟稳态），否则从边缘生成
-        // 这样一来，初始画面就是均匀向心流动的，不会有"一坨"形状
         const r = isInitial ? Math.random() * maxR : maxR;
 
         this.x = width / 2 + Math.cos(angle) * r;
         this.y = height / 2 + Math.sin(angle) * r;
 
-        this.size = (this.z * 2.5) + 0.5;
-        this.baseOpacity = (this.z * 0.6) + 0.1;
+        this.size = (this.z * 2.0) + 0.5;
+        this.baseOpacity = (this.z * 0.4) + 0.1; // 降低透明度
         this.opacity = this.baseOpacity;
     }
 
@@ -59,22 +51,13 @@ class Particle {
         this.x += (dx / dist) * this.speed;
         this.y += (dy / dist) * this.speed;
 
-        // 距离中心近时淡出
         if (dist < 150) {
             this.opacity = this.baseOpacity * (dist / 150);
         }
     }
 
     draw() {
-        // 根据心情改变粒子颜色
-        if (currentMood === 'ink') {
-            ctx.fillStyle = `rgba(20, 20, 20, ${this.opacity})`; // 墨色粒子
-        } else if (currentMood === 'red') {
-            ctx.fillStyle = `rgba(255, 100, 100, ${this.opacity})`; // 红色粒子
-        } else {
-            ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`; // 金色粒子
-        }
-
+        ctx.fillStyle = `rgba(212, 175, 55, ${this.opacity})`; // 统一金色
         ctx.beginPath();
         ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
         ctx.fill();
@@ -83,194 +66,27 @@ class Particle {
 
 function initParticles() {
     particles = [];
-    for (let i = 0; i < 350; i++) particles.push(new Particle());
-}
-
-// --- 2. 信号波形 ---
-function updateSignal() {
-    time += 0.05;
-    // 墨水模式下隐藏波形
-    if (currentMood === 'ink') {
-        signalPath.setAttribute('stroke-opacity', 0);
-        return;
-    }
-
-    if (signalIntensity > 0.1) signalIntensity -= 0.005;
-    if (currentMood === 'signal') signalIntensity = 0.8;
-
-    let path = `M 0 100 `;
-    for (let x = 0; x <= 1920; x += 40) {
-        let noise = (Math.sin(x * 0.01 + time) + Math.sin(x * 0.03 - time * 2)) * 20;
-        let activePulse = (Math.random() - 0.5) * 150 * signalIntensity;
-        let y = 100 + noise * 0.5 + activePulse;
-        path += `S ${x - 20} ${y} ${x} ${y} `;
-    }
-    signalPath.setAttribute('d', path);
-    signalPath.setAttribute('stroke-opacity', 0.2 + signalIntensity * 0.6);
-
-    // 红色模式波形变红
-    if (currentMood === 'red') {
-        signalPath.setAttribute('stroke', 'rgba(207, 46, 46, 0.4)');
-    } else {
-        signalPath.setAttribute('stroke', 'rgba(212, 175, 55, 0.3)');
-    }
+    for (let i = 0; i < 200; i++) particles.push(new Particle()); // 减少粒子数量
 }
 
 function animate() {
     ctx.clearRect(0, 0, width, height);
     particles.forEach(p => { p.update(); p.draw(); });
-    updateSignal();
     requestAnimationFrame(animate);
 }
-
-// --- 3. 剧本内容 (完整版) ---
-// 增加 duration 以适应长文本阅读，type 代表氛围
-const fullScript = [
-    { text: "这里的风，有牙齿。", mood: "wind", duration: 4000 },
-    { text: "传说在北纬24度的腹地，<br>风能嚼碎坚硬的花岗岩，<br>把一切文明的痕迹还原成沙砾。", mood: "wind", duration: 7000 },
-    { text: "公元 2026 年，冬。", mood: "dark", duration: 4000 },
-    { text: "探测器的指针在红海沿岸疯狂跳动。", mood: "signal", duration: 4000 },
-    { text: "这里本该是荒漠，<br>但频谱仪却收到了一段奇怪的信号——<br>那是一串极其规律的脉冲，<br>像是某种巨大机械的心跳。", mood: "signal", duration: 8000 },
-    { text: "有人说它是海市蜃楼，<br>有人说那是通往下一个纪元的源代码。", mood: "signal", duration: 6000 },
-    { text: "我们将涉沙而去，<br>探索这心跳的本源和力量。", mood: "wind", duration: 5000 },
-
-    // 水墨篇章
-    { text: "我们携带了<span style='font-weight:bold; color:#000;'>纸上的烟云</span>。", mood: "ink", duration: 5000 },
-    { text: "它由松木燃烧后的灰烬 with 水调和而成。<br>表面上看，那只是黑与白的潦草涂抹，<br>但千万别眨眼——<br>那里面栖居着东方的五岳与长河。", mood: "ink", duration: 9000 },
-    { text: "在这片色彩饱和度过载的金色沙漠里，<br>我们将展开这幅只有双色的画卷。", mood: "ink", duration: 6000 },
-    { text: "它不反光，<br>却能吸收所有的燥热，<br>释放出一种名为“留白”的凉意。", mood: "ink", duration: 7000 },
-
-    // 红色契约篇章
-    { text: "我们携带了<span class='highlight-red'>红色的契约</span>。", mood: "red", duration: 5000 },
-    { text: "那是一种比沙漠烈日更耀眼的红，<br>是用朱砂画就的图腾。<br>它不属于现在，而属于未来。", mood: "red", duration: 7000 },
-    { text: "在这个没有严冬的国度，<br>我们将贴上这些方正的符号，<br>用来召唤一个他们或许从未真正理解的季节——", mood: "red", duration: 7000 },
-    { text: "<span class='highlight-red' style='font-size:2em'>“春”</span>", mood: "red", duration: 4000 },
-    { text: "这不仅是祝福，<br>更是一种古老的护身符，<br>向时间许诺：下一个轮回，万物安好。", mood: "red", duration: 7000 },
-
-    // 迷雾篇章
-    { text: "至于剩下的航程？<br>哪怕是我们自己，也只握着半张残卷。", mood: "default", duration: 6000 },
-    { text: "在这片被折叠的时空里，<br>指南针是会撒谎的。", mood: "dark", duration: 5000 },
-    { text: "也许下一秒，我们会闯入<br>《一千零一夜》里都不曾记载的折叠空间；", mood: "default", duration: 6000 },
-    { text: "也许在某个转角，我们会与某种<br>超越了“工业”与“诗歌”的第三种存在迎面相撞。", mood: "default", duration: 7000 },
-    { text: "这是一场没有剧本的潜行。", mood: "default", duration: 4000 },
-    { text: "我们不是走向黑暗，<br>走入一片<span style='color:#fff; text-shadow:0 0 10px gold;'>金色的迷雾</span>。", mood: "gold-mist", duration: 6000 },
-    { text: "唯一的确定，就是不确定本身。", mood: "gold-mist", duration: 5000 },
-    { text: "在这个冬天，<br>请把你的频率调至与我们同步，保持监听。", mood: "end", duration: 6000 },
-    { text: "因为接下来的每一个字节，<br>都将是从“奇迹”的中心发回的、<br>绝版的现场报告。", mood: "end", duration: 8000 }
-];
-
-// --- 4. 核心逻辑控制 ---
-
-function setMood(mood) {
-    currentMood = mood;
-    const body = document.body;
-
-    // 默认重置
-    body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
-    body.style.color = '#D4AF37';
-    atmosphere.style.opacity = 0;
-    canvas.style.opacity = 1;
-
-    if (mood === 'dark' || mood === 'signal') {
-        atmosphere.style.backgroundColor = 'rgba(0,20,20,0.8)';
-        atmosphere.style.opacity = 0.5;
-    }
-    else if (mood === 'ink') {
-        // 水墨模式：白底黑字
-        body.style.background = '#f0f0f0'; // 宣纸白
-        body.style.color = '#111'; // 墨黑
-        atmosphere.style.backgroundColor = '#fff';
-        atmosphere.style.opacity = 0.7;
-        canvas.style.opacity = 0.4; // 粒子变淡
-    }
-    else if (mood === 'red') {
-        // 红色模式：红黑氛围
-        body.style.background = '#1a0505';
-        body.style.color = '#ffcccc';
-        atmosphere.style.backgroundColor = '#4a0000';
-        atmosphere.style.opacity = 0.4;
-    }
-    else if (mood === 'gold-mist') {
-        // 改用氛围层颜色过渡，避免背景渐变切换的突兀感
-        atmosphere.style.backgroundColor = 'rgba(85, 68, 0, 0.8)'; // 深金色氛围
-        atmosphere.style.opacity = 0.6;
-    }
-}
-
-// 可打断的等待函数 (核心升级)
-function waitWithSkip(ms) {
-    return new Promise(resolve => {
-        let timerId = setTimeout(() => {
-            skipTrigger = null; // 自然结束，清除触发器
-            resolve();
-        }, ms);
-
-        // 定义跳过触发器
-        skipTrigger = () => {
-            clearTimeout(timerId); // 清除定时器
-            skipTrigger = null;    // 重置触发器
-            resolve();             // 立即完成 Promise
-        };
-    });
-}
-
-// 全局点击监听
-document.addEventListener('click', (e) => {
-    // 如果不是点开始按钮，且当前有正在进行的等待
-    if (e.target !== startBtn && skipTrigger) {
-        skipTrigger(); // 触发跳过
-    }
-});
-
-async function playSequence(e) {
-    if (e) e.preventDefault();
-    // UI 状态切换
-    startBtn.style.opacity = 0;
-    startBtn.style.pointerEvents = 'none';
-    clickZone.style.display = 'block'; // 开启点击层
-    hintText.style.opacity = 1; // 显示提示
-
-    outputDiv.innerHTML = '';
-
-    for (let item of fullScript) {
-        setMood(item.mood);
-
-        // 1. 创建并显示文本
-        const p = document.createElement('div');
-        p.className = 'text-line';
-        p.innerHTML = item.text;
-        outputDiv.appendChild(p);
-
-        // 强制重绘以触发动画
-        void p.offsetWidth;
-        p.classList.add('active');
-
-        // 2. 等待阅读 (可点击跳过)
-        // 给一点小延迟防止点击连发导致的瞬间跳过
-        await new Promise(r => setTimeout(r, 100));
-        await waitWithSkip(item.duration);
-
-        // 3. 文本淡出
-        p.classList.remove('active');
-        p.classList.add('exit');
-
-        // 淡出时间较短，一般不需跳过，但为了流畅体验，这里设定固定短延迟
-        await new Promise(r => setTimeout(r, 600));
-        outputDiv.innerHTML = ''; // 清理DOM
-    }
-
-    // 结束状态
-    await new Promise(r => setTimeout(r, 1000));
-    startBtn.textContent = "再次接入 / RECONNECT";
-    startBtn.style.opacity = 1;
-    startBtn.style.pointerEvents = 'auto';
-    clickZone.style.display = 'none';
-    hintText.style.opacity = 0;
-}
-
-startBtn.addEventListener('click', playSequence);
 
 // 启动
 resize();
 initParticles();
 animate();
+
+// --- 2. 交互逻辑 ---
+document.querySelectorAll('.level-node').forEach(node => {
+    node.addEventListener('click', () => {
+        const label = node.getAttribute('data-label');
+        console.log(`Clicked level: ${label}`);
+        // 这里可以添加跳转逻辑，例如：
+        // window.location.href = `level-${node.querySelector('.node-circle').innerText}.html`;
+        alert(`进入关卡: ${label}`);
+    });
+});

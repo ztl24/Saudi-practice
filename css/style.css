@@ -2,29 +2,42 @@
 
 :root {
     --sand-gold: #D4AF37;
+    --sand-gold-dim: #D4AF3780;
     --deep-space: #050505;
-    --ink-black: #111;
-    --cinnabar: #cf2e2e;
+    --node-bg: rgba(0, 0, 0, 0.7);
 }
 
 body {
     background-color: var(--deep-space);
+    /* 背景图设置 */
+    background-image: url('../images/推送背景.png');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+
     color: var(--sand-gold);
-    font-family: 'Share Tech Mono', monospace;
+    font-family: 'Share Tech Mono', 'Noto Serif SC', monospace;
     overflow: hidden;
     margin: 0;
     height: 100vh;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: radial-gradient(circle at center, #1a1505 0%, #000000 100%);
-    transition: background 1.5s ease, color 1.5s ease;
-    user-select: none;
-    /* 防止双击选中文本 */
+    width: 100vw;
+    position: relative;
 }
 
-/* 粒子层 */
+/* 遮罩层：让背景稍微暗一点，突显节点 */
+.atmosphere-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 0;
+    pointer-events: none;
+}
+
+/* 粒子层作为氛围 */
 #canvas-layer {
     position: absolute;
     top: 0;
@@ -32,132 +45,105 @@ body {
     width: 100%;
     height: 100%;
     z-index: 1;
-    transition: opacity 1.5s ease;
-}
-
-/* 信号层 */
-#signal-layer {
-    position: absolute;
-    top: 50%;
-    left: 0;
-    width: 100%;
-    height: 200px;
-    transform: translateY(-50%);
-    z-index: 2;
     pointer-events: none;
-    opacity: 0.5;
-    transition: opacity 1s ease;
+    opacity: 0.6;
+    /* 稍微减淡 */
 }
 
-/* UI 层 */
-#ui-layer {
-    position: absolute;
-    z-index: 10;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 3rem;
-    box-sizing: border-box;
-}
-
-/* 文本容器 */
-.text-container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 85%;
-    max-width: 1000px;
-    text-align: center;
-    pointer-events: auto;
-    /* 允许点击 */
-    z-index: 20;
-    cursor: pointer;
-    /* 提示可点击 */
-}
-
-.text-line {
-    font-family: 'Noto Serif SC', serif;
-    font-size: clamp(1.5rem, 4vw, 2.2rem);
-    /* 响应式字体 */
-    line-height: 1.8;
-    opacity: 0;
-    transform: translateY(20px);
-    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
-    margin-bottom: 2rem;
-    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
-    font-weight: 700;
-}
-
-.text-line.active {
-    opacity: 1;
-    transform: translateY(0);
-}
-
-.text-line.exit {
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: opacity 0.5s ease-in, transform 0.5s ease-in;
-}
-
-.highlight-red {
-    color: #ff4d4d;
-    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
-}
-
-.highlight-ink {
-    font-weight: bold;
-    color: #111;
-}
-
-/* 控制按钮 */
-.controls {
-    pointer-events: auto;
-    cursor: pointer;
-    border: 1px solid var(--sand-gold);
-    padding: 12px 24px;
-    background: rgba(0, 0, 0, 0.6);
-    color: var(--sand-gold);
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    font-size: 1rem;
-    transition: all 0.4s ease;
-    backdrop-filter: blur(4px);
-    z-index: 30;
-}
-
-.controls:hover {
-    background: var(--sand-gold);
-    color: black;
-    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
-}
-
-/* 点击提示 */
-.click-hint {
-    position: absolute;
-    bottom: 100px;
-    left: 50%;
-    transform: translateX(-50%);
-    font-size: 0.8rem;
-    opacity: 0;
-    transition: opacity 1s;
-    color: rgba(255, 255, 255, 0.4);
-    letter-spacing: 2px;
-    pointer-events: none;
-}
-
-/* 氛围覆盖层 */
-.atmosphere-overlay {
+/* 地图容器 */
+#level-map-container {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    z-index: 0;
-    opacity: 0;
-    transition: opacity 2s ease, background-color 2s ease;
+    z-index: 10;
+}
+
+/* 路径线 SVG */
+#path-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     pointer-events: none;
+    z-index: 5;
+}
+
+.path-line {
+    stroke: var(--sand-gold);
+    stroke-width: 2px;
+    stroke-dasharray: 10, 5;
+    stroke-opacity: 0.6;
+    animation: dashMove 20s linear infinite;
+}
+
+@keyframes dashMove {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: 100;
+    }
+}
+
+/* 关卡节点 */
+.level-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: transform 0.3s ease;
+}
+
+.level-node:hover {
+    transform: translate(-50%, -50%) scale(1.1);
+}
+
+.node-circle {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, #ffd700, #b8860b);
+    border: 3px solid #fff;
+    box-shadow: 0 0 15px var(--sand-gold);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #4a3c00;
+    z-index: 2;
+    transition: all 0.3s ease;
+}
+
+.level-node:hover .node-circle {
+    box-shadow: 0 0 25px #fff, 0 0 10px var(--sand-gold);
+    background: radial-gradient(circle at 30% 30%, #fff, #ffd700);
+}
+
+.node-label {
+    margin-top: 10px;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.8);
+    border: 1px solid var(--sand-gold);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.9rem;
+    color: #fff;
+    white-space: nowrap;
+    text-shadow: 0 0 5px black;
+    opacity: 0.9;
+    transition: all 0.3s;
+}
+
+.level-node:hover .node-label {
+    background: var(--sand-gold);
+    color: #000;
+    font-weight: bold;
 }

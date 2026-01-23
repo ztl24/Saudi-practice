@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>金色迷雾：24.7频段</title>
+    <title>海外实践：沙特阿拉伯</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
@@ -14,30 +14,38 @@
     <div id="atmosphere" class="atmosphere-overlay"></div>
     <canvas id="canvas-layer"></canvas>
 
-    <svg id="signal-layer" viewBox="0 0 1920 200" preserveAspectRatio="none">
-        <path id="signal-path" d="" stroke="rgba(212, 175, 55, 0.3)" stroke-width="2" fill="none" />
-    </svg>
+    <!-- 游戏关卡地图层 -->
+    <div id="level-map-container">
+        <svg id="path-svg" viewBox="0 0 100 100" preserveAspectRatio="none">
+            <!-- Smooth path connecting (10,85) -> (30,60) -> (50,75) -> (70,40) -> (90,15) -->
+            <path d="M 10 85 C 20 70, 20 60, 30 60 S 40 75, 50 75 S 60 40, 70 40 S 80 15, 90 15" fill="none"
+                class="path-line" />
+        </svg>
 
-    <div id="ui-layer">
-        <div class="flex justify-between w-full opacity-70">
-            <div class="text-sm tracking-widest font-mono">
-                SIGNAL:DET<br>
-                FREQ:24.7Hz
-            </div>
-            <div class="text-sm tracking-widest font-mono text-right">
-                LOC:24.7°N<br>
-                UTC+8:2026
-            </div>
+        <!-- 关卡节点 -->
+        <div class="level-node" style="left: 10%; top: 85%;" data-label="苏尔坦亲王大学孔子学院">
+            <div class="node-circle">1</div>
+            <div class="node-label">苏尔坦亲王大学<br>孔子学院</div>
         </div>
 
-        <div id="click-zone" style="position:fixed; top:0; left:0; width:100%; height:100%; z-index:15; display:none;">
+        <div class="level-node" style="left: 30%; top: 60%;" data-label="沙特国王大学">
+            <div class="node-circle">2</div>
+            <div class="node-label">沙特国王大学</div>
         </div>
 
-        <div class="text-container" id="text-output"></div>
-        <div class="click-hint" id="hint-text"></div>
+        <div class="level-node" style="left: 50%; top: 75%;" data-label="徐工集团展会">
+            <div class="node-circle">3</div>
+            <div class="node-label">徐工集团展会<br>(达曼)</div>
+        </div>
 
-        <div class="w-full flex justify-center pb-10">
-            <button id="start-btn" class="controls">接入信号 / CONNECT</button>
+        <div class="level-node" style="left: 70%; top: 40%;" data-label="中国电建">
+            <div class="node-circle">4</div>
+            <div class="node-label">中国电建</div>
+        </div>
+
+        <div class="level-node" style="left: 90%; top: 15%;" data-label="中电装备">
+            <div class="node-circle">5</div>
+            <div class="node-label">中电装备</div>
         </div>
     </div>
 
