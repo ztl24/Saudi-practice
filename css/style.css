@@ -96,6 +96,169 @@ body {
     z-index: 10;
 }
 
+/* 氛围覆盖层 */
+.atmosphere-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    /* 在粒子层之下或之上? animation.html说是0, canvas是1. map是10. */
+    opacity: 0;
+    transition: opacity 2s ease, background-color 2s ease;
+    pointer-events: none;
+}
+
+/* ================== 开场动画层 (Intro) ================== */
+#intro-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    transition: opacity 1.5s ease;
+}
+
+#intro-layer.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 信号层 */
+#signal-layer {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 1s ease;
+}
+
+/* UI 层 (顶栏等) */
+#ui-layer {
+    /* position: absolute; inside intro-layer now */
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* 文本容器 */
+.text-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 1000px;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 30;
+    cursor: pointer;
+}
+
+.text-line {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    line-height: 1.8;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+}
+
+.text-line.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.text-line.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+}
+
+.highlight-red {
+    color: #ff4d4d;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+.highlight-ink {
+    font-weight: bold;
+    color: #111;
+}
+
+/* 控制按钮 (进入星图) */
+.controls {
+    pointer-events: auto;
+    cursor: pointer;
+    border: 1px solid var(--sand-gold);
+    padding: 12px 24px;
+    background: rgba(0, 0, 0, 0.6);
+    color: var(--sand-gold);
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-size: 1rem;
+    transition: all 0.4s ease;
+    backdrop-filter: blur(4px);
+    z-index: 100;
+    /* 最高层级 */
+}
+
+.controls:hover {
+    background: var(--sand-gold);
+    color: black;
+    box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+}
+
+.enter-map-button {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    /* 黄色边框已由 .controls 提供 */
+}
+
+/* 点击提示 */
+.click-hint {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 1s;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    pointer-events: none;
+}
+
+/* ================== 地图层 (Map) ================== */
+#map-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    transition: opacity 2s ease;
+    /* 缓慢显现 */
+}
+
+.hidden {
+    display: none !important;
+}
+
+.opacity-0 {
+    opacity: 0;
+}
+
 /* 路径线 - 极淡虚线丝带 + 运动 */
 #path-svg {
     position: absolute;
@@ -180,31 +343,14 @@ body {
 .node-circle {
     border-radius: 50%;
     position: relative;
-    /* CSS模拟星球纹理：利用多重径向渐变模拟大陆和云层 */
-    background:
-        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.8) 0%, transparent 10%),
-        /* 高光 */
-        radial-gradient(circle at 30% 60%, rgba(255, 255, 255, 0.3) 0%, transparent 20%),
-        /* 云层1 */
-        radial-gradient(ellipse at 80% 80%, rgba(0, 0, 0, 0.5) 0%, transparent 50%),
-        /* 阴影 */
-        radial-gradient(circle at 50% 50%, #2e7d32 30%, #4caf50 60%, #1b5e20 100%);
-    /* 基础色：类地 */
-    background-size: 200% 200%;
-    box-shadow:
-        inset -15px -15px 30px rgba(0, 0, 0, 0.9),
-        /* 内部深阴影 */
-        0 0 20px rgba(100, 200, 255, 0.2);
-    /* 大气层微光 */
-
     width: 60px;
     height: 60px;
-    overflow: hidden;
-    animation: planetRotate 60s linear infinite;
-    /* 模拟自转动画效果(背景移动) */
+    transform-style: preserve-3d;
+    animation: planetRotate 40s linear infinite;
+    /* 统一自转动画 */
 }
 
-/* 统一的大气层光晕 */
+/* 统一的大气层光晕 (在星球内部最上层) */
 .node-circle::after {
     content: '';
     position: absolute;
@@ -213,139 +359,190 @@ body {
     width: 100%;
     height: 100%;
     border-radius: 50%;
-    box-shadow: inset 2px 2px 8px rgba(255, 255, 255, 0.2);
-    z-index: 2;
+    box-shadow: inset 4px 4px 12px rgba(255, 255, 255, 0.3), inset -10px -10px 20px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    pointer-events: none;
 }
 
 @keyframes planetRotate {
     0% {
-        background-position: 0% 50%;
-    }
-
-    50% {
-        background-position: 100% 50%;
+        background-position: 0% 0%;
     }
 
     100% {
-        background-position: 0% 50%;
+        background-position: 200% 0%;
     }
+
+    /* 水平移动背景模拟自转 */
 }
 
-/* 差异化星球纹理 */
+/* ================== 差异化星球纹理 ================== */
 
-/* 1. 苏尔坦亲王大学 - 蓝色海洋星球 */
+/* 1. 苏尔坦亲王大学 - 地球 (Earth) */
 .level-node:nth-child(3) .node-circle {
     width: 75px;
     height: 75px;
     background:
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 10%),
-        radial-gradient(circle at 40% 70%, rgba(255, 255, 255, 0.4) 0%, transparent 30%),
-        linear-gradient(135deg, #0acffe 0%, #495aff 100%);
-    box-shadow: inset -15px -15px 30px rgba(0, 0, 0, 0.8), 0 0 25px rgba(10, 207, 254, 0.4);
+        radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.7) 0%, transparent 20%),
+        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 15%),
+        linear-gradient(115deg, transparent 40%, #4CAF50 45%, #2E7D32 55%, transparent 60%),
+        linear-gradient(200deg, transparent 30%, #4CAF50 35%, #81C784 45%, transparent 50%),
+        radial-gradient(circle, #2196F3, #0D47A1);
+    background-size: 200% 100%;
+    box-shadow: 0 0 25px rgba(33, 150, 243, 0.5);
+    animation-duration: 30s;
 }
 
-/* 2. 沙特国王大学 - 沙漠风暴星球 */
+/* 2. 沙特国王大学 - 火星 (Mars) */
 .level-node:nth-child(4) .node-circle {
-    width: 85px;
-    height: 85px;
+    width: 80px;
+    height: 80px;
     background:
-        radial-gradient(circle at 80% 20%, rgba(255, 255, 255, 0.9) 0%, transparent 5%),
-        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(165, 42, 42, 0.2) 10px, rgba(165, 42, 42, 0.2) 20px),
-        linear-gradient(to bottom right, #f7971e, #ffd200);
-    box-shadow: inset -20px -20px 40px rgba(0, 0, 0, 0.8), 0 0 30px rgba(247, 151, 30, 0.5);
+        repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.1) 20px),
+        repeating-radial-gradient(circle at 50% 50%, #d84315, #bf360c 20%, #d84315 40%);
+    background-size: 200% 200%;
+    box-shadow: 0 0 30px rgba(216, 67, 21, 0.6);
+    animation-duration: 45s;
 }
 
-/* 3. 徐工展会 - 气态巨行星 (带环) */
+/* 3. 徐工展会 - 土星 (Saturn) - 彻底重构，移除杂质 */
 .level-node:nth-child(5) .node-circle {
-    width: 65px;
-    height: 65px;
-    background:
-        linear-gradient(180deg, #e6dada 0%, #274046 100%);
-    box-shadow: inset -10px -10px 20px rgba(0, 0, 0, 0.9), 0 0 15px rgba(230, 218, 218, 0.3);
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(to bottom, #c7b68b 0%, #e3d5b1 20%, #c8ad82 30%, #dcc59e 45%, #e6cfab 55%, #c8aa7a 65%, #bfae92 85%, #9e7f53 100%);
+    background-size: 100% 100%;
+    /* 内发光模拟 */
+    box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(220, 197, 158, 0.4);
+    animation: none;
+    z-index: 10;
+    transform-style: flat;
+    /* 防止3D层级混乱 */
 }
 
-.level-node:nth-child(5)::before {
+/* 禁用土星的默认大气层，为光环腾出空间 */
+.level-node:nth-child(5) .node-circle::after {
+    content: none;
+    box-shadow: none;
+}
+
+/* 统一光环样式：只在 node-circle 上操作，不干扰 level-node */
+.level-node:nth-child(5) .node-circle::before,
+.level-node:nth-child(5) .node-circle::after {
     content: '';
     position: absolute;
-    width: 160%;
-    height: 40%;
-    border: 4px solid rgba(255, 255, 255, 0.3);
+    top: 50%;
+    left: 50%;
+    width: 160px;
+    /* 合适的大尺寸 */
+    height: 50px;
     border-radius: 50%;
-    top: 30%;
-    left: -30%;
-    transform: rotate(-20deg);
-    border-top: none;
-    /* 环绕效果 */
+    transform: translate(-50%, -50%) rotate(-20deg);
     pointer-events: none;
+    /* 统一光环样式：只在 node-circle 上操作，不干扰 level-node */
+    background: radial-gradient(ellipse at center,
+            transparent 0,
+            transparent 58px,
+            /* 内孔 */
+
+            /* C环 (内环) - 极淡 */
+            rgba(210, 200, 180, 0.2) 59px,
+            rgba(210, 200, 180, 0.2) 62px,
+
+            /* B环 (主环) - 较亮但柔和 */
+            rgba(225, 215, 190, 0.6) 63px,
+            rgba(220, 210, 180, 0.5) 70px,
+            rgba(225, 215, 190, 0.6) 72px,
+
+            /* 卡西尼缝 (Cassini Division) - 清晰的缝隙 */
+            transparent 73px,
+            transparent 75px,
+
+            /* A环 (外环) - 略暗 */
+            rgba(215, 205, 180, 0.4) 76px,
+            rgba(215, 205, 180, 0.5) 79px,
+
+            /* 恩克缝 (Encke Gap) - 微缝 */
+            transparent 80px,
+
+            /* 外环边缘 - 渐隐 */
+            rgba(215, 205, 180, 0.3) 81px,
+            transparent 83px);
+}
+
+/* 后环 - 放在星球背面 */
+.level-node:nth-child(5) .node-circle::before {
     z-index: -1;
 }
 
-/* 4. 中国电建 - 熔岩星球 */
+/* 前环 - 放在星球前面，但裁剪出一半 */
+.level-node:nth-child(5) .node-circle::after {
+    content: '';
+    z-index: 20;
+    /* 关键：使用 clip-path 只保留下半部分，没有任何边框残留 */
+    clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+}
+
+/* 彻底隐藏可能残留的父元素伪类 */
+.level-node:nth-child(5)::before,
+.level-node:nth-child(5)::after {
+    display: none !important;
+    content: none !important;
+}
+
+
+/* 4. 中国电建 - 木星 (Jupiter) */
 .level-node:nth-child(6) .node-circle {
-    width: 60px;
-    height: 60px;
+    width: 90px;
+    height: 90px;
     background:
-        radial-gradient(circle at 50% 50%, transparent 10%, rgba(0, 0, 0, 0.8) 100%),
-        repeating-radial-gradient(circle at 50% 50%, #ff4b1f 0%, #ff9068 20%, #ff4b1f 40%);
-    animation: lavaPulse 10s infinite linear;
+        radial-gradient(ellipse at 75% 65%, #a63f2d 0%, #a63f2d 15%, transparent 30%),
+        linear-gradient(to bottom,
+            #8c7e6c 0%, #e6dccf 15%,
+            #bfae92 25%, #a38c70 35%,
+            #e6dccf 50%, #bfae92 65%,
+            #705c45 80%, #5e5043 100%);
+    background-size: 200% 100%;
+    box-shadow: 0 0 35px rgba(200, 170, 130, 0.5);
+    animation-duration: 25s;
 }
 
-@keyframes lavaPulse {
-    0% {
-        background-size: 100% 100%;
-    }
-
-    50% {
-        background-size: 120% 120%;
-    }
-
-    100% {
-        background-size: 100% 100%;
-    }
-}
-
-/* 5. 中电装备 - 科技暗星 */
+/* 5. 中电装备 - 海王星 (Neptune) */
 .level-node:nth-child(7) .node-circle {
-    width: 70px;
-    height: 70px;
-    background: radial-gradient(circle, #232526, #414345);
-    border: 1px solid rgba(0, 255, 255, 0.3);
-    box-shadow: 0 0 15px rgba(0, 255, 255, 0.2);
+    width: 65px;
+    height: 65px;
+    background:
+        radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 15%),
+        radial-gradient(ellipse at 40% 60%, #000050 0%, transparent 30%),
+        radial-gradient(circle, #2979ff, #0d47a1, #000033);
+    background-size: 200% 200%;
+    box-shadow: 0 0 25px rgba(41, 121, 255, 0.6);
+    animation-duration: 35s;
 }
 
-/* 取消所有锁定状态的视觉差异，全部变为"可探索" */
-.level-node.locked {
-    opacity: 1;
-    /* 恢复不透明 */
-    filter: none;
-    /* 恢复色彩 */
-    cursor: pointer;
-    /* 恢复手型 */
-}
 
-.level-node.locked .node-circle {
-    /* 保持上面的星球样式 */
-}
-
-/* 标签样式优化 - 始终显示或悬浮显示 */
+/* 标签样式优化 */
 .node-label {
-    margin-top: 15px;
-    padding: 5px 10px;
-    background: rgba(0, 20, 40, 0.6);
-    border-left: 2px solid var(--sand-gold);
-    border-radius: 2px;
+    margin-top: 25px;
+    padding: 6px 14px;
+    background: rgba(0, 15, 30, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
     text-align: center;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.8);
+    font-size: 0.85rem;
+    color: rgba(230, 230, 255, 0.9);
     letter-spacing: 1px;
-    backdrop-filter: blur(2px);
+    text-shadow: 0 2px 4px black;
+    backdrop-filter: blur(4px);
     transition: all 0.3s;
-    opacity: 0.7;
+    opacity: 0.8;
+    z-index: 30;
+    white-space: nowrap;
 }
 
 .level-node:hover .node-label {
     opacity: 1;
     transform: scale(1.1);
-    background: rgba(0, 20, 40, 0.9);
+    background: rgba(0, 20, 40, 0.95);
+    border-color: var(--sand-gold);
     color: var(--sand-gold);
 }
