@@ -1,0 +1,314 @@
+/* =========================================
+   3. 地图层与星球样式 (Map Layer)
+   ========================================= */
+
+#map-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    transition: opacity 2s ease;
+}
+
+/* 地图容器 */
+#level-map-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+}
+
+/* 进入地图按钮 - 位于右下角 */
+.enter-map-button {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+}
+
+/* 漂浮装饰 */
+#floating-glyphs {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+    pointer-events: none;
+    overflow: hidden;
+}
+
+.glyph {
+    position: absolute;
+    color: rgba(255, 255, 255, 0.1);
+    font-size: 2rem;
+    animation: floatUp 20s linear infinite;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(110vh) rotate(0deg);
+        opacity: 0;
+    }
+
+    20% {
+        opacity: 0.2;
+    }
+
+    80% {
+        opacity: 0.2;
+    }
+
+    100% {
+        transform: translateY(-10vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* 路径线 */
+#path-svg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 5;
+    filter: drop-shadow(0 0 5px rgba(200, 220, 255, 0.2));
+}
+
+.path-line {
+    stroke: var(--ribbon-white);
+    stroke-width: 2px;
+    stroke-linecap: round;
+    fill: none;
+    stroke-dasharray: 10, 15;
+    animation: dashMove 30s linear infinite;
+}
+
+@keyframes dashMove {
+    from {
+        stroke-dashoffset: 0;
+    }
+
+    to {
+        stroke-dashoffset: 1000;
+    }
+}
+
+/* 玩家标记 - 宇宙飞船 */
+#player-marker {
+    position: absolute;
+    transform: translate(-50%, -120%);
+    z-index: 30;
+    pointer-events: none;
+    transition: all 1s ease;
+}
+
+.marker-icon {
+    font-size: 3rem;
+    filter: drop-shadow(0 0 15px cyan);
+    animation: floatShip 4s ease-in-out infinite;
+    transform: rotate(-15deg);
+}
+
+@keyframes floatShip {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(-15deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(-10deg);
+    }
+}
+
+/* 关卡节点基础样式 */
+.level-node {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    cursor: pointer;
+    z-index: 20;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.level-node:hover {
+    transform: translate(-50%, -50%) scale(1.2);
+    z-index: 25;
+}
+
+.node-circle {
+    border-radius: 50%;
+    position: relative;
+    width: 60px;
+    height: 60px;
+    transform-style: preserve-3d;
+    animation: planetRotate 40s linear infinite;
+}
+
+.node-circle::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    box-shadow: inset 4px 4px 12px rgba(255, 255, 255, 0.3), inset -10px -10px 20px rgba(0, 0, 0, 0.8);
+    z-index: 10;
+    pointer-events: none;
+}
+
+@keyframes planetRotate {
+    0% {
+        background-position: 0% 0%;
+    }
+
+    100% {
+        background-position: 200% 0%;
+    }
+}
+
+/* --- 星球纹理差异化 --- */
+
+/* 1. 地球 */
+.level-node:nth-child(3) .node-circle {
+    width: 75px;
+    height: 75px;
+    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.7) 0%, transparent 20%),
+        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 15%),
+        linear-gradient(115deg, transparent 40%, #4CAF50 45%, #2E7D32 55%, transparent 60%),
+        linear-gradient(200deg, transparent 30%, #4CAF50 35%, #81C784 45%, transparent 50%),
+        radial-gradient(circle, #2196F3, #0D47A1);
+    background-size: 200% 100%;
+    box-shadow: 0 0 25px rgba(33, 150, 243, 0.5);
+    animation-duration: 30s;
+}
+
+/* 2. 火星 */
+.level-node:nth-child(4) .node-circle {
+    width: 80px;
+    height: 80px;
+    background: repeating-linear-gradient(45deg, transparent, transparent 10px, rgba(0, 0, 0, 0.1) 10px, rgba(0, 0, 0, 0.1) 20px),
+        repeating-radial-gradient(circle at 50% 50%, #d84315, #bf360c 20%, #d84315 40%);
+    background-size: 200% 200%;
+    box-shadow: 0 0 30px rgba(216, 67, 21, 0.6);
+    animation-duration: 45s;
+}
+
+/* 3. 土星 (光环处理) */
+.level-node:nth-child(5) .node-circle {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(to bottom, #c7b68b 0%, #e3d5b1 20%, #c8ad82 30%, #dcc59e 45%, #e6cfab 55%, #c8aa7a 65%, #bfae92 85%, #9e7f53 100%);
+    background-size: 100% 100%;
+    box-shadow: inset -5px -5px 10px rgba(0, 0, 0, 0.5), 0 0 15px rgba(220, 197, 158, 0.4);
+    animation: none;
+    z-index: 10;
+    transform-style: flat;
+}
+
+.level-node:nth-child(5) .node-circle::after {
+    content: none;
+    box-shadow: none;
+}
+
+/* 禁用默认光晕 */
+
+/* 光环 */
+.level-node:nth-child(5) .node-circle::before,
+.level-node:nth-child(5) .node-circle::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 160px;
+    height: 50px;
+    border-radius: 50%;
+    transform: translate(-50%, -50%) rotate(-20deg);
+    pointer-events: none;
+    background: radial-gradient(ellipse at center,
+            transparent 0, transparent 58px,
+            rgba(210, 200, 180, 0.2) 59px, rgba(210, 200, 180, 0.2) 62px,
+            rgba(225, 215, 190, 0.6) 63px, rgba(220, 210, 180, 0.5) 70px, rgba(225, 215, 190, 0.6) 72px,
+            transparent 73px, transparent 75px,
+            rgba(215, 205, 180, 0.4) 76px, rgba(215, 205, 180, 0.5) 79px,
+            transparent 80px,
+            rgba(215, 205, 180, 0.3) 81px, transparent 83px);
+}
+
+.level-node:nth-child(5) .node-circle::before {
+    z-index: -1;
+}
+
+/* 后环 */
+.level-node:nth-child(5) .node-circle::after {
+    z-index: 20;
+    clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
+    /* 前环裁剪 */
+}
+
+/* 隐藏冲突伪类 */
+.level-node:nth-child(5)::before,
+.level-node:nth-child(5)::after {
+    display: none !important;
+    content: none !important;
+}
+
+
+/* 4. 木星 */
+.level-node:nth-child(6) .node-circle {
+    width: 90px;
+    height: 90px;
+    background: radial-gradient(ellipse at 75% 65%, #a63f2d 0%, #a63f2d 15%, transparent 30%),
+        linear-gradient(to bottom, #8c7e6c 0%, #e6dccf 15%, #bfae92 25%, #a38c70 35%, #e6dccf 50%, #bfae92 65%, #705c45 80%, #5e5043 100%);
+    background-size: 200% 100%;
+    box-shadow: 0 0 35px rgba(200, 170, 130, 0.5);
+    animation-duration: 25s;
+}
+
+/* 5. 海王星 */
+.level-node:nth-child(7) .node-circle {
+    width: 65px;
+    height: 65px;
+    background: radial-gradient(circle at 80% 30%, rgba(255, 255, 255, 0.3) 0%, transparent 15%),
+        radial-gradient(ellipse at 40% 60%, #000050 0%, transparent 30%),
+        radial-gradient(circle, #2979ff, #0d47a1, #000033);
+    background-size: 200% 200%;
+    box-shadow: 0 0 25px rgba(41, 121, 255, 0.6);
+    animation-duration: 35s;
+}
+
+/* 标签样式 */
+.node-label {
+    margin-top: 25px;
+    padding: 6px 14px;
+    background: rgba(0, 15, 30, 0.7);
+    border: 1px solid rgba(212, 175, 55, 0.3);
+    border-radius: 4px;
+    text-align: center;
+    font-size: 0.85rem;
+    color: rgba(230, 230, 255, 0.9);
+    letter-spacing: 1px;
+    text-shadow: 0 2px 4px black;
+    backdrop-filter: blur(4px);
+    transition: all 0.3s;
+    opacity: 0.8;
+    z-index: 30;
+    white-space: nowrap;
+}
+
+.level-node:hover .node-label {
+    opacity: 1;
+    transform: scale(1.1);
+    background: rgba(0, 20, 40, 0.95);
+    border-color: var(--sand-gold);
+    color: var(--sand-gold);
+}

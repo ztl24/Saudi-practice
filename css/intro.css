@@ -1,0 +1,101 @@
+/* =========================================
+   2. 开场动画层样式 (Intro Layer)
+   ========================================= */
+
+#intro-layer {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 20;
+    transition: opacity 1.5s ease;
+}
+
+#intro-layer.fade-out {
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 信号波形层 */
+#signal-layer {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    transform: translateY(-50%);
+    z-index: 2;
+    pointer-events: none;
+    opacity: 0.5;
+    transition: opacity 1s ease;
+}
+
+/* UI 层容器 */
+#ui-layer {
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+}
+
+/* 剧本文字容器 */
+.text-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 85%;
+    max-width: 1000px;
+    text-align: center;
+    pointer-events: auto;
+    z-index: 30;
+    cursor: pointer;
+}
+
+.text-line {
+    font-family: 'Noto Serif SC', serif;
+    font-size: clamp(1.5rem, 4vw, 2.2rem);
+    line-height: 1.8;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    margin-bottom: 2rem;
+    text-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    font-weight: 700;
+}
+
+.text-line.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.text-line.exit {
+    opacity: 0;
+    transform: translateY(-20px);
+    transition: opacity 0.5s ease-in, transform 0.5s ease-in;
+}
+
+/* 特殊高亮样式 */
+.highlight-red {
+    color: #ff4d4d;
+    text-shadow: 0 0 15px rgba(255, 0, 0, 0.6);
+}
+
+.highlight-ink {
+    font-weight: bold;
+    color: #111;
+}
+
+/* 点击提示 */
+.click-hint {
+    position: absolute;
+    bottom: 120px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: opacity 1s;
+    color: rgba(255, 255, 255, 0.4);
+    letter-spacing: 2px;
+    pointer-events: none;
+}
