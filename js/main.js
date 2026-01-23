@@ -171,8 +171,9 @@ if (btn) btn.addEventListener('click', transitionToMap);
 // 关卡点击
 document.querySelectorAll('.level-node').forEach(node => {
     node.addEventListener('click', () => {
-        const label = node.getAttribute('data-label');
-        alert(`🚀 宇宙飞船点火，前往：${label}`);
+        // const label = node.getAttribute('data-label');
+        // alert(`🚀 宇宙飞船点火，前往：${label}`);
+        window.location.href = 'practice.html';
     });
 });
 

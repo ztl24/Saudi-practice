@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>海外实践：成果展示</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- CSS Modules -->
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/practice.css">
+</head>
+
+<body>
+
+    <!-- ========== 共享背景层 ========== -->
+    <div id="atmosphere" class="atmosphere-overlay" style="opacity: 0.3; background-color: rgba(0,20,20,0.5);"></div>
+    <canvas id="canvas-layer"></canvas>
+
+    <!-- 返回按钮 -->
+    <a href="index.html" class="back-btn">
+        &lt; Return to Map
+    </a>
+
+    <!-- 内容容器 -->
+    <div class="practice-container">
+
+        <header class="page-header">
+            <h1 class="page-title">实践纪实</h1>
+            <div class="page-subtitle">PRACTICE DOCUMENTATION // KSA 2026</div>
+        </header>
+
+        <div class="content-grid">
+            <!-- 卡片 1 -->
+            <article class="glass-card">
+                <div class="card-image">
+                    <!-- 占位图 -->
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)"
+                        stroke-width="1">
+                        <path
+                            d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="card-title">文化交流</h2>
+                <p class="card-text">
+                    在苏尔坦亲王大学孔子学院，我们深入体验了当地的教育氛围，与当地学生进行了深入的文化交流活动，包括书法展示与传统节日庆祝。
+                </p>
+            </article>
+
+            <!-- 卡片 2 -->
+            <article class="glass-card">
+                <div class="card-image">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)"
+                        stroke-width="1">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20"></path>
+                        <path
+                            d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z">
+                        </path>
+                    </svg>
+                </div>
+                <h2 class="card-title">企业参访</h2>
+                <p class="card-text">
+                    实地走访了沙特国王大学与多家当地中资企业，了解“一带一路”倡议下的中沙合作现状，见证了中国技术在各种基础设施建设中的应用。
+                </p>
+            </article>
+
+            <!-- 卡片 3 -->
+            <article class="glass-card">
+                <div class="card-image">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,0.2)"
+                        stroke-width="1">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+                <h2 class="card-title">调研成果</h2>
+                <p class="card-text">
+                    不仅收获了宝贵的第一手资料，还完成了关于中沙教育合作前景的调研报告，为未来的跨文化交流项目提供了数据支持与建议。
+                </p>
+            </article>
+        </div>
+    </div>
+
+    <!-- 简单复用现有的粒子效果 -->
+    <script src="js/effects.js"></script>
+    <script>
+        // 简化的 Main 用于 Practice 页面
+        const canvas = document.getElementById('canvas-layer');
+        const ctx = canvas.getContext('2d');
+
+        let currentMood = 'default';
+
+        function resize() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+
+        // 初始化
+        resize();
+        initParticles();
+
+        function animate() {
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight);
+
+            particles.forEach(p => {
+                p.update();
+                p.draw(ctx, 'default');
+            });
+
+            requestAnimationFrame(animate);
+        }
+
+        animate();
+    </script>
+</body>
+
+</html>
