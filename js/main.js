@@ -57,7 +57,7 @@ function setMood(mood) {
     else if (mood === 'ink') {
         body.style.background = '#f0f0f0';
         body.style.color = '#111';
-        atmosphere.style.backgroundColor = '#fff';
+        atmosphere.style.backgroundColor = '#E8D0A9';
         atmosphere.style.opacity = 0.7;
         canvas.style.opacity = 0.4;
     }
