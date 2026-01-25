@@ -12,7 +12,8 @@
 
 body {
     background-color: var(--deep-space);
-    background: radial-gradient(circle at center, #110500 0%, #000000 100%);
+    background: radial-gradient(circle at center, #110500 0%, #000000 100%) !important;
+    /* Force lock background found */
     color: var(--sand-gold);
     font-family: 'Share Tech Mono', 'Noto Serif SC', sans-serif;
     overflow: hidden;
@@ -20,6 +21,8 @@ body {
     height: 100vh;
     width: 100vw;
     position: relative;
+    /* Transition only color for text, NOT background */
+    transition: color 1.5s ease;
 }
 
 /* 游戏标题 */

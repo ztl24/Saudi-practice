@@ -41,36 +41,49 @@ function animate() {
 // --- 逻辑控制与状态切换 ---
 
 function setMood(mood) {
+    if (currentMood === mood) return; // 避免重复设置
     currentMood = mood;
     const body = document.body;
 
-    // Default Reset
-    body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
-    body.style.color = '#D4AF37';
-    atmosphere.style.opacity = 0;
-    canvas.style.opacity = 1;
+    // --- 1. 默认属性设定 ---
+    // 默认文字颜色
+    let textColor = '#D4AF37';
+    // 氛围层默认是透明的，或者保持上一个颜色但透明度为0
+    // 我们这里为了简单，默认设置为透明黑
+    let atmosphereColor = 'rgba(0,0,0,0)';
+    let atmosphereOpacity = 0;
+    let canvasOpacity = 1;
 
+    // --- 2. 根据心情覆盖属性 (只动 overlay 和文字) ---
     if (mood === 'dark' || mood === 'signal') {
-        atmosphere.style.backgroundColor = 'rgba(0,20,20,0.8)';
-        atmosphere.style.opacity = 0.5;
+        atmosphereColor = 'rgba(0,20,20,0.8)';
+        atmosphereOpacity = 0.5;
     }
     else if (mood === 'ink') {
-        body.style.background = '#E8D0A9';
-        body.style.color = '#111';
-        atmosphere.style.backgroundColor = '#E8D0A9';
-        atmosphere.style.opacity = 0.7;
-        canvas.style.opacity = 0.4;
+        // 水墨模式：使用 overlay 遮挡底层星空
+        atmosphereColor = '#E8D0A9'; // 宣纸色如果不透明，opacity=1 就会完全盖住背景
+        atmosphereOpacity = 1;
+        textColor = '#111';
+        canvasOpacity = 0.4;
     }
     else if (mood === 'red') {
-        body.style.background = '#1a0505';
-        body.style.color = '#ffcccc';
-        atmosphere.style.backgroundColor = '#4a0000';
-        atmosphere.style.opacity = 0.4;
+        // 红色模式：使用 overlay 遮挡
+        atmosphereColor = '#1a0505';
+        atmosphereOpacity = 1; // 完全遮挡，或 0.95 透一点星空
+        textColor = '#ffcccc';
     }
     else if (mood === 'gold-mist') {
-        atmosphere.style.backgroundColor = 'rgba(85, 68, 0, 0.8)';
-        atmosphere.style.opacity = 0.6;
+        atmosphereColor = 'rgba(85, 68, 0, 0.8)';
+        atmosphereOpacity = 0.6;
     }
+
+    // --- 3. 应用样式 ---
+    // 绝对不修改 body.style.background，防止闪烁
+    body.style.color = textColor;
+
+    atmosphere.style.backgroundColor = atmosphereColor;
+    atmosphere.style.opacity = atmosphereOpacity;
+    canvas.style.opacity = canvasOpacity;
 }
 
 // 可中断等待
