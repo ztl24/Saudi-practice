@@ -373,36 +373,44 @@
             currentMood = mood;
             const body = document.body;
 
-            // 默认重置
-            body.style.background = 'radial-gradient(circle at center, #1a1505 0%, #000000 100%)';
-            body.style.color = '#D4AF37';
-            atmosphere.style.opacity = 0;
-            canvas.style.opacity = 1;
+            // --- 核心修改：不再修改 body 背景，而是操作 atmosphere 遮罩层 ---
+            // 默认文字颜色
+            let textColor = '#D4AF37';
+            // 默认遮罩层透明 (显示底层星空)
+            let atmosphereColor = 'rgba(0,0,0,0)';
+            let atmosphereOpacity = 0;
+            let canvasOpacity = 1;
 
             if (mood === 'dark' || mood === 'signal') {
-                atmosphere.style.backgroundColor = 'rgba(0,20,20,0.8)';
-                atmosphere.style.opacity = 0.5;
+                atmosphereColor = 'rgba(0,20,20,0.8)';
+                atmosphereOpacity = 0.5;
             }
             else if (mood === 'ink') {
-                // 水墨模式：白底黑字
-                body.style.background = '#f0f0f0'; // 宣纸白
-                body.style.color = '#111'; // 墨黑
-                atmosphere.style.backgroundColor = '#fff';
-                atmosphere.style.opacity = 0.7;
-                canvas.style.opacity = 0.4; // 粒子变淡
+                // 水墨模式：遮罩层设为不透明的宣纸白，覆盖底层星空
+                // 这利用了 CSS opacity 属性的平滑过渡，避免了背景切换的跳跃感
+                atmosphereColor = '#E8D0A9';
+                atmosphereOpacity = 1;
+                textColor = '#111';
+                canvasOpacity = 0.4;
             }
             else if (mood === 'red') {
-                // 红色模式：红黑氛围
-                body.style.background = '#1a0505';
-                body.style.color = '#ffcccc';
-                atmosphere.style.backgroundColor = '#4a0000';
-                atmosphere.style.opacity = 0.4;
+                // 红色模式：遮罩层设为不透明深红
+                atmosphereColor = '#1a0505';
+                atmosphereOpacity = 1;
+                textColor = '#ffcccc';
             }
             else if (mood === 'gold-mist') {
-                // 改用氛围层颜色过渡，避免背景渐变切换的突兀感
-                atmosphere.style.backgroundColor = 'rgba(85, 68, 0, 0.8)'; // 深金色氛围
-                atmosphere.style.opacity = 0.6;
+                atmosphereColor = 'rgba(85, 68, 0, 0.8)';
+                atmosphereOpacity = 0.6;
             }
+
+            // 应用样式
+            body.style.color = textColor;
+            // body.style.background = ... (已移除，绝对不改背景)
+
+            atmosphere.style.backgroundColor = atmosphereColor;
+            atmosphere.style.opacity = atmosphereOpacity;
+            canvas.style.opacity = canvasOpacity;
         }
 
         // 可打断的等待函数 (核心升级)
