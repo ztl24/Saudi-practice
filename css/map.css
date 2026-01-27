@@ -185,23 +185,18 @@
     }
 }
 
-/* --- 星球纹理差异化 --- */
-
-/* 1. 地球 */
+/* 1. 地球 (Emoji Style) */
 .level-node:nth-child(3) .node-circle {
-    width: 75px;
-    height: 75px;
-    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.7) 0%, transparent 20%),
-        radial-gradient(circle at 70% 20%, rgba(255, 255, 255, 0.6) 0%, transparent 15%),
-        linear-gradient(115deg, transparent 40%, #4CAF50 45%, #2E7D32 55%, transparent 60%),
-        linear-gradient(200deg, transparent 30%, #4CAF50 35%, #81C784 45%, transparent 50%),
-        radial-gradient(circle, #2196F3, #0D47A1);
-    background-size: 200% 100%;
-    box-shadow: 0 0 25px rgba(33, 150, 243, 0.5);
-    animation-duration: 30s;
+    font-size: 60px;
+    animation: emojiSpin 60s linear infinite;
+    text-shadow: 0 0 20px rgba(33, 150, 243, 0.6);
+    background: transparent !important;
+    box-shadow: none !important;
+    width: auto !important;
+    height: auto !important;
 }
 
-/* 2. 火星 */
+/* 2. 火星 (CSS Style Restored) */
 .level-node:nth-child(4) .node-circle {
     width: 80px;
     height: 80px;
@@ -209,10 +204,13 @@
         repeating-radial-gradient(circle at 50% 50%, #d84315, #bf360c 20%, #d84315 40%);
     background-size: 200% 200%;
     box-shadow: 0 0 30px rgba(216, 67, 21, 0.6);
-    animation-duration: 45s;
+    animation: planetRotate 45s linear infinite;
+    font-size: 0;
+    /* Hide any text if present */
+    text-shadow: none;
 }
 
-/* 3. 土星 (光环处理) */
+/* 3. 土星 (CSS Style Restored + Rings) */
 .level-node:nth-child(5) .node-circle {
     width: 70px;
     height: 70px;
@@ -222,19 +220,15 @@
     animation: none;
     z-index: 10;
     transform-style: flat;
+    font-size: 0;
+    text-shadow: none;
 }
 
-.level-node:nth-child(5) .node-circle::after {
-    content: none;
-    box-shadow: none;
-}
-
-/* 禁用默认光晕 */
-
-/* 光环 */
+/* Restore Rings for Saturn */
 .level-node:nth-child(5) .node-circle::before,
 .level-node:nth-child(5) .node-circle::after {
     content: '';
+    display: block !important;
     position: absolute;
     top: 50%;
     left: 50%;
@@ -257,14 +251,12 @@
     z-index: -1;
 }
 
-/* 后环 */
 .level-node:nth-child(5) .node-circle::after {
     z-index: 20;
     clip-path: polygon(0% 50%, 100% 50%, 100% 100%, 0% 100%);
-    /* 前环裁剪 */
 }
 
-/* 隐藏冲突伪类 */
+/* Restore Pseudo-elements visibility logic */
 .level-node:nth-child(5)::before,
 .level-node:nth-child(5)::after {
     display: none !important;
@@ -272,18 +264,26 @@
 }
 
 
-/* 4. 木星 */
+/* 4. 木星 (CSS Style Restored) */
 .level-node:nth-child(6) .node-circle {
     width: 90px;
     height: 90px;
-    background: radial-gradient(ellipse at 75% 65%, #a63f2d 0%, #a63f2d 15%, transparent 30%),
+    background:
+        /* Red Spot */
+        radial-gradient(ellipse at 70% 65%, #d68e76 0%, #c46c52 25%, transparent 45%),
+        /* Bands */
         linear-gradient(to bottom, #8c7e6c 0%, #e6dccf 15%, #bfae92 25%, #a38c70 35%, #e6dccf 50%, #bfae92 65%, #705c45 80%, #5e5043 100%);
-    background-size: 200% 100%;
+    background-repeat: no-repeat, repeat;
+    background-size: 65% 40%, 100% 100%;
+    /* Limit spot size */
+    background-position: 97% 70%, 0 0;
     box-shadow: 0 0 35px rgba(200, 170, 130, 0.5);
-    animation-duration: 25s;
+    animation: none;
+    font-size: 0;
+    text-shadow: none;
 }
 
-/* 5. 海王星 */
+/* 5. 海王星 (CSS Style Restored) */
 .level-node:nth-child(7) .node-circle {
     width: 65px;
     height: 65px;
@@ -292,7 +292,9 @@
         radial-gradient(circle, #2979ff, #0d47a1, #000033);
     background-size: 200% 200%;
     box-shadow: 0 0 25px rgba(41, 121, 255, 0.6);
-    animation-duration: 35s;
+    animation: planetRotate 35s linear infinite;
+    font-size: 0;
+    text-shadow: none;
 }
 
 /* 标签样式 */
