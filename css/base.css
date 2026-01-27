@@ -30,6 +30,13 @@ body {
     position: absolute;
     top: 5%;
     width: 100%;
+    /* Use flexbox for image + text alignment */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    /* Adjust spacing between logo and text */
+
     text-align: center;
     font-size: 2.5rem;
     font-weight: 700;
@@ -39,6 +46,16 @@ body {
     pointer-events: none;
     letter-spacing: 8px;
     opacity: 0.8;
+}
+
+/* Title Logo styling */
+.title-logo {
+    height: 2.5em;
+    width: auto;
+    object-fit: contain;
+    letter-spacing: normal;
+    /* Move logo up and slightly right as requested */
+    transform: translate(30px, -8px);
 }
 
 /* 粒子层画布 */
