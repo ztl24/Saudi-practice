@@ -23,10 +23,19 @@
 }
 
 /* 进入地图按钮 - 位于右下角 */
+/* 进入地图按钮 - 位于右下角 */
 .enter-map-button {
     position: fixed;
     bottom: 40px;
     right: 40px;
+}
+
+.replay-button {
+    position: fixed;
+    bottom: 40px;
+    right: 40px;
+    z-index: 200;
+    /* Higher than map layer */
 }
 
 /* 漂浮装饰 */

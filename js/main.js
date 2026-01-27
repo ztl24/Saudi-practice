@@ -163,6 +163,12 @@ function transitionToMap() {
 
         // 初始化地图装饰
         initFloatingGlyphs();
+
+        // Toggle buttons
+        const enterBtn = document.getElementById('enter-map-btn');
+        const replayBtn = document.getElementById('replay-intro-btn');
+        if (enterBtn) enterBtn.style.display = 'none';
+        if (replayBtn) replayBtn.classList.remove('hidden');
     }, 1000);
 }
 
@@ -191,8 +197,60 @@ document.querySelectorAll('.level-node').forEach(node => {
 });
 
 // --- 启动初始化 ---
+// --- Replay Logic ---
+function replayIntro() {
+    // Hide map, show intro
+    const introLayer = document.getElementById('intro-layer');
+    const mapLayer = document.getElementById('map-layer');
+    const replayBtn = document.getElementById('replay-intro-btn');
+    const enterBtn = document.getElementById('enter-map-btn');
+
+    introLayer.style.display = 'block';
+    introLayer.classList.remove('fade-out');
+
+    mapLayer.classList.add('hidden');
+    mapLayer.classList.add('opacity-0');
+
+    if (replayBtn) replayBtn.classList.add('hidden');
+    if (enterBtn) enterBtn.style.display = 'block'; // Ensure enter button is back
+
+    // Reset state
+    currentMood = 'default';
+    time = 0;
+
+    // Start sequence
+    playSequence();
+}
+
+// Replay Button Event
+const replayBtn = document.getElementById('replay-intro-btn');
+if (replayBtn) replayBtn.addEventListener('click', replayIntro);
+
+
+// --- 启动初始化 ---
 resize();
 initParticles();
 initFloatingGlyphs(); // Safe to call even if hidden
 animate();
-playSequence();
+
+// Check for skipIntro param
+const urlParams = new URLSearchParams(window.location.search);
+if (urlParams.get('skipIntro') === 'true') {
+    // Skip intro, directly show map
+    const introLayer = document.getElementById('intro-layer');
+    const mapLayer = document.getElementById('map-layer');
+    const enterBtn = document.getElementById('enter-map-btn');
+    const replayBtn = document.getElementById('replay-intro-btn');
+
+    introLayer.style.display = 'none';
+    mapLayer.classList.remove('hidden');
+    mapLayer.classList.remove('opacity-0');
+
+    if (enterBtn) enterBtn.style.display = 'none';
+    if (replayBtn) replayBtn.classList.remove('hidden');
+
+    initFloatingGlyphs();
+} else {
+    // Normal start
+    playSequence();
+}
