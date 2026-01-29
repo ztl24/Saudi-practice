@@ -1,7 +1,8 @@
 /* Message Board Specific Styles */
 
 .message-form-container {
-    grid-column: 1 / -1; /* Full width on mobile */
+    grid-column: 1 / -1;
+    /* Full width on mobile */
     max-width: 800px;
     margin: 0 auto 40px;
     width: 100%;
@@ -27,7 +28,8 @@
     letter-spacing: 1px;
 }
 
-.message-input, .message-textarea {
+.message-input,
+.message-textarea {
     width: 100%;
     background: rgba(0, 0, 0, 0.3);
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -38,7 +40,8 @@
     transition: all 0.3s ease;
 }
 
-.message-input:focus, .message-textarea:focus {
+.message-input:focus,
+.message-textarea:focus {
     outline: none;
     border-color: var(--sand-gold);
     box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
@@ -104,11 +107,82 @@
 .message-content {
     color: rgba(255, 255, 255, 0.9);
     line-height: 1.6;
-    white-space: pre-wrap; /* Preserve line breaks */
+    white-space: pre-wrap;
+    /* Preserve line breaks */
 }
 
-@media (min-width: 768px) {
-    .message-form-container {
-        width: 100%;
-    }
+/* Valine Theme Overrides (Dark/Glass) */
+#vcomments .vwrap {
+    background: rgba(0, 0, 0, 0.3) !important;
+    border: 1px solid rgba(255, 255, 255, 0.1) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+}
+
+#vcomments .vwrap:hover {
+    border-color: var(--sand-gold) !important;
+    background: rgba(0, 0, 0, 0.5) !important;
+}
+
+#vcomments .vheader .vnick,
+#vcomments .vheader .vmail,
+#vcomments .vheader .vlink {
+    background: transparent !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: var(--sand-gold) !important;
+}
+
+#vcomments .vheader .vnick:focus,
+#vcomments .vheader .vmail:focus,
+#vcomments .vheader .vlink:focus {
+    border-color: var(--sand-gold) !important;
+}
+
+#vcomments .vedit .vctrl {
+    text-align: right;
+}
+
+#vcomments .vbtn {
+    background: transparent !important;
+    border: 1px solid var(--sand-gold) !important;
+    color: var(--sand-gold) !important;
+    border-radius: 4px !important;
+    padding: 5px 20px !important;
+    transition: all 0.3s ease !important;
+}
+
+#vcomments .vbtn:hover {
+    background: var(--sand-gold) !important;
+    color: #000 !important;
+}
+
+#vcomments .vlist .vcard .vhead .vnick {
+    color: var(--sand-gold) !important;
+    font-weight: bold;
+}
+
+#vcomments .vlist .vcard .vcontent {
+    color: rgba(255, 255, 255, 0.9) !important;
+    background: none !important;
+}
+
+#vcomments .vlist .vcard .vquote {
+    border-left: 3px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ccc !important;
+}
+
+#vcomments .info {
+    display: none !important;
+    /* Hide powered by */
+}
+
+#vcomments p,
+#vcomments span,
+#vcomments a {
+    font-family: 'Noto Serif SC', sans-serif !important;
+}
+
+/* Hide some unnecessary Valine metadata if desired */
+.vsys {
+    display: none !important;
 }

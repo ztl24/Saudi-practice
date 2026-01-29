@@ -33,29 +33,17 @@
 
         <div class="content-grid" style="display: block; max-width: 800px;">
 
-            <!-- 留言表单 -->
-            <section class="glass-card message-form-container">
-                <h2 class="card-title text-xl mb-6">写下你的留言 / Leave a Message</h2>
-                <form id="message-form">
-                    <div class="message-input-group">
-                        <label for="username" class="message-label">昵称 / NICKNAME</label>
-                        <input type="text" id="username" class="message-input" placeholder="请输入你的名字..." required
-                            maxlength="20">
-                    </div>
+            <!-- 留言列表区 (Dual Mode: Local or Valine) -->
 
-                    <div class="message-input-group">
-                        <label for="content" class="message-label">内容 / CONTENT</label>
-                        <textarea id="content" class="message-textarea" placeholder="写下你的想法..." required
-                            maxlength="200"></textarea>
-                    </div>
+            <!-- 留言板区域 -->
 
-                    <button type="submit" class="submit-btn">发送留言 / SUBMIT</button>
-                </form>
-            </section>
-
-            <!-- 留言列表 -->
-            <div id="messages-list" class="messages-list-container">
-                <!-- Messages will be injected here by JS -->
+            <!-- 所有人可见的留言板容器 -->
+            <!-- Valine Container: The only container we need for public messages -->
+            <div id="vcomments" class="glass-card" style="margin-top: 30px;">
+                <div style="text-align: center; color: #aaa; padding: 20px;">
+                    正在连接星际通讯频段... <br>
+                    Connecting to Interstellar Network...
+                </div>
             </div>
 
         </div>
@@ -63,6 +51,7 @@
 
     <!-- 简单复用现有的粒子效果 -->
     <script src="js/effects.js"></script>
+    <script src="//unpkg.com/valine/dist/Valine.min.js"></script>
     <script src="js/messages.js"></script>
     <script>
         // 简化的 Main 用于页面背景

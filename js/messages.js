@@ -1,133 +1,59 @@
-// Message Board Logic using LocalStorage
+// Message Board Logic - Explicit Developer Mode
+// Only requires the developer to fill in keys once.
 
-const STORAGE_KEY = 'saudi_practice_guestbook_messages';
+// ============================================
+// ⚠️ 开发者必填区 (DEVELOPER CONFIGURATION) ⚠️
+// 请去 leancloud.app 注册并获取 keys
+// ============================================
+const APP_ID = '请在这里填入你的AppID';  // 例如: 'AbCdEfGhIjK...'
+const APP_KEY = '请在这里填入你的AppKey'; // 例如: '123456...'
+// ============================================
 
-// Default messages to show if empty (Mock data)
-// 第一次访问时显示一些默认留言，让页面看起来不那么冷清
-const DEFAULT_MESSAGES = [
-    {
-        id: 1,
-        name: 'Project Lead',
-        content: '欢迎来到我们的沙特实践展示站！如果有任何建议，请在这里留言。Welcome to our Saudi practice showcase!',
-        date: '2026-01-28 10:00:00'
-    },
-    {
-        id: 2,
-        name: 'Visitor A',
-        content: '页面设计很有科技感，特别是粒子效果！The visual design is very futuristic.',
-        date: '2026-01-29 14:20:00'
+
+// Initialization
+function init() {
+    // Check if developer has configured the keys
+    if (!APP_ID || APP_ID.includes('请在这里填入') || !APP_KEY || APP_KEY.includes('请在这里填入')) {
+        showConfigInstruction();
+        return;
     }
-];
 
-// DOM Elements
-const messageForm = document.getElementById('message-form');
-const messagesList = document.getElementById('messages-list');
-const usernameInput = document.getElementById('username');
-const contentInput = document.getElementById('content');
-
-// Helper: Get Current Date String
-function getCurrentDate() {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+    // Initialize Valine (Public Cloud Message Board)
+    activateValine(APP_ID, APP_KEY);
 }
 
-// Helper: Escape HTML to prevent XSS (Security for local demo too)
-function escapeHtml(text) {
-    if (!text) return '';
-    return text
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&#039;");
-}
-
-// Load Messages
-function loadMessages() {
-    let messages = localStorage.getItem(STORAGE_KEY);
-    if (!messages) {
-        // Initialize with default if completely empty
-        messages = JSON.stringify(DEFAULT_MESSAGES);
-        localStorage.setItem(STORAGE_KEY, messages);
-    }
-    return JSON.parse(messages);
-}
-
-// Save New Message
-function saveMessage(name, content) {
-    const messages = loadMessages();
-    const newMessage = {
-        id: Date.now(),
-        name: name,
-        content: content,
-        date: getCurrentDate()
-    };
-
-    // Add to beginning of array
-    messages.unshift(newMessage);
-
-    // Persist
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
-
-    return newMessage;
-}
-
-// Render Single Message
-function createMessageElement(msg) {
-    const div = document.createElement('article');
-    div.className = 'glass-card message-card';
-    div.innerHTML = `
-        <div class="message-header">
-            <span class="message-author">${escapeHtml(msg.name)}</span>
-            <span class="message-date">${escapeHtml(msg.date)}</span>
-        </div>
-        <div class="message-content">${escapeHtml(msg.content)}</div>
-    `;
-    return div;
-}
-
-// Render All Messages
-function renderMessages() {
-    const messages = loadMessages();
-    messagesList.innerHTML = ''; // Clear current
-
-    messages.forEach(msg => {
-        const el = createMessageElement(msg);
-        messagesList.appendChild(el);
+function activateValine(id, key) {
+    new Valine({
+        el: '#vcomments',
+        appId: id,
+        appKey: key,
+        placeholder: '在星空下留下你的足迹...\nLeave your message under the stars...',
+        avatar: 'monsterid', // Auto-generated nerdy avatar
+        pageSize: 10,
+        visitor: true, // Article reading count
+        recordIP: true, // For safety
+        enableQQ: true // Allow QQ avatar
     });
 }
 
-// Handle Form Submit
-if (messageForm) {
-    messageForm.addEventListener('submit', (e) => {
-        e.preventDefault();
-
-        const name = usernameInput.value.trim();
-        const content = contentInput.value.trim();
-
-        if (name && content) {
-            saveMessage(name, content);
-
-            // Clear inputs
-            usernameInput.value = '';
-            contentInput.value = '';
-
-            // Re-render
-            renderMessages();
-
-            // Optional: User feedback
-            alert('留言发布成功！(Message Posted Successfully)');
-        }
-    });
+function showConfigInstruction() {
+    const container = document.getElementById('vcomments');
+    if (container) {
+        container.innerHTML = `
+            <div style="text-align: center; color: var(--sand-gold); padding: 40px;">
+                <h3 style="font-size: 1.5rem; margin-bottom: 20px;">⚠️ 开发者配置未完成</h3>
+                <p style="color: #ccc; margin-bottom: 20px;">
+                    请打开 <code>js/messages.js</code> 文件，<br>
+                    并在顶部的 <code>APP_ID</code> 和 <code>APP_KEY</code> 中<br>
+                    填入你在 LeanCloud 申请的凭证。
+                </p>
+                <div style="font-size: 0.8rem; color: #666;">
+                    (Please configure APP_ID and APP_KEY in js/messages.js to enable the message board)
+                </div>
+            </div>
+        `;
+    }
 }
 
-// Init
-document.addEventListener('DOMContentLoaded', () => {
-    renderMessages();
-});
+// Run
+document.addEventListener('DOMContentLoaded', init);
