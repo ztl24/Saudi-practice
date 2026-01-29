@@ -186,3 +186,11 @@
 .vsys {
     display: none !important;
 }
+
+/* Twikoo Message Font Override */
+#tcomment .tk-content p,
+#tcomment .tk-content {
+    font-family: 'Times New Roman', serif !important;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+}
