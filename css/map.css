@@ -30,6 +30,17 @@
     right: 40px;
 }
 
+.message-board-button {
+    position: fixed;
+    bottom: 40px;
+    right: 320px;
+    /* To the left of the Enter Map button */
+    text-decoration: none;
+    /* Ensure <a> looks like button */
+    display: inline-block;
+    z-index: 100;
+}
+
 .replay-button {
     position: fixed;
     bottom: 40px;

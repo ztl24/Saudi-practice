@@ -1,0 +1,114 @@
+/* Message Board Specific Styles */
+
+.message-form-container {
+    grid-column: 1 / -1; /* Full width on mobile */
+    max-width: 800px;
+    margin: 0 auto 40px;
+    width: 100%;
+}
+
+.messages-list-container {
+    grid-column: 1 / -1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.message-input-group {
+    margin-bottom: 20px;
+}
+
+.message-label {
+    display: block;
+    color: var(--sand-gold);
+    font-family: 'Share Tech Mono', monospace;
+    margin-bottom: 8px;
+    letter-spacing: 1px;
+}
+
+.message-input, .message-textarea {
+    width: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 12px;
+    color: #fff;
+    font-family: 'Noto Serif SC', serif;
+    transition: all 0.3s ease;
+}
+
+.message-input:focus, .message-textarea:focus {
+    outline: none;
+    border-color: var(--sand-gold);
+    box-shadow: 0 0 10px rgba(212, 175, 55, 0.2);
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.message-textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+.submit-btn {
+    background: transparent;
+    border: 1px solid var(--sand-gold);
+    color: var(--sand-gold);
+    padding: 10px 30px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    width: 100%;
+    margin-top: 10px;
+}
+
+.submit-btn:hover {
+    background: var(--sand-gold);
+    color: #000;
+    box-shadow: 0 0 15px rgba(212, 175, 55, 0.4);
+}
+
+/* Message Card Specifics */
+.message-card {
+    border-left: 3px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.3s ease;
+}
+
+.message-card:hover {
+    border-left-color: var(--sand-gold);
+}
+
+.message-header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 10px;
+}
+
+.message-author {
+    color: var(--sand-gold);
+    font-weight: bold;
+    font-family: 'Share Tech Mono', monospace;
+}
+
+.message-date {
+    color: rgba(255, 255, 255, 0.4);
+    font-size: 0.8rem;
+    font-family: monospace;
+}
+
+.message-content {
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    white-space: pre-wrap; /* Preserve line breaks */
+}
+
+@media (min-width: 768px) {
+    .message-form-container {
+        width: 100%;
+    }
+}
