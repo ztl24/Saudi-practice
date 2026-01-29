@@ -7,7 +7,7 @@ function initTwikoo() {
     // 请填入你在 Zeabur 部署成功后获得的网址
     // 例如: https://twikoo-xyz.zeabur.app
     // ============================================
-    const TWIKOO_ENV_ID = 'https://sjcl.clusters.zeabur.com';
+    const TWIKOO_ENV_ID = 'https://saudipractice.zeabur.app';
     // ============================================
 
     if (!TWIKOO_ENV_ID || TWIKOO_ENV_ID.includes('请填入')) {
