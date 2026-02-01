@@ -339,68 +339,73 @@
    ========================================= */
 @media (max-width: 768px) {
 
-    /* --- Cinematic Bottom Dock (Parallel Layout) --- */
+    /* --- Green Zone (Bottom Button Dock) --- */
+    /* Total Height Approx: 150px form bottom */
+
+    /* Row 1 (Upper): Message Board & Enter Map */
     .enter-map-button,
     .message-board-button {
         position: fixed;
-        bottom: 30px;
-        /* Moved DOWN to bottom */
+        bottom: 95px;
+        /* Upper part of Green Zone */
         width: 42%;
         text-align: center;
         padding: 12px 0;
         font-size: 0.9rem;
         border: 1px solid var(--sand-gold);
-        /* Gold border (Unified) */
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+        background: rgba(0, 0, 0, 0.75);
+        /* Higher opacity */
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
         border-radius: 4px;
         color: var(--sand-gold);
-        /* Gold Text */
         text-transform: uppercase;
+        z-index: 100;
     }
 
-    /* Left Button: Message Board */
     .message-board-button {
         left: 5%;
         right: auto;
         transform: none;
     }
 
-    /* Right Button: Enter Map */
     .enter-map-button {
         right: 5%;
         left: auto;
         transform: none;
-        bottom: 30px;
-        /* Aligned */
+        bottom: 95px;
     }
 
-    /* Replay Button: Moved to Top Right to clear space below Message Board/Earth */
+    /* Row 2 (Lower): Replay Button */
     .replay-button {
         position: fixed;
-        top: 80px;
-        /* Top Right Area */
-        right: 5%;
-        bottom: auto;
-        left: auto;
-        width: 140px;
-        /* Compact width */
-        padding: 8px 0;
-        font-size: 0.8rem;
+        bottom: 30px;
+        /* Lower part of Green Zone */
+        left: 50%;
+        transform: translateX(-50%);
+        /* Centered */
+        width: 90%;
+        /* Full width of container */
+        right: auto;
+        top: auto;
+        padding: 10px 0;
+        font-size: 0.9rem;
         text-align: center;
-        /* Uniform Style matching others */
         border: 1px solid var(--sand-gold);
-        background: rgba(0, 0, 0, 0.7);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
+        background: rgba(0, 0, 0, 0.75);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.9);
         border-radius: 4px;
         color: var(--sand-gold);
-        opacity: 0.9;
+        opacity: 1;
+        z-index: 100;
     }
 
-    /* --- Nodes Area (Significantly Lifted) --- */
-    /* Scale down nodes slightly more */
+    /* --- Red Zone (Planets Middle Area) --- */
+    /* Must be strictly ABOVE buttons (Bottom > 150px) */
+    /* Confined to 20% - 65% Top */
+
+    /* Scale down nodes */
     .level-node {
         transform: translate(-50%, -50%) scale(0.65);
     }
@@ -409,7 +414,7 @@
         transform: translate(-50%, -50%) scale(0.8);
     }
 
-    /* Adjust label positioning */
+    /* Label Styles */
     .node-label {
         font-size: 0.85rem;
         margin-top: 40px;
@@ -420,41 +425,38 @@
         text-shadow: 0 1px 3px black;
     }
 
-    /* Zigzag Layout (Lifted to prevent Overlap) */
-    /* Range: 18% Top to 60% Top */
-    /* All nodes are in the UPPER 60% of screen. */
-    /* Bottom 40% is completely empty for buttons. */
+    /* Zigzag Layout (Red Zone) */
 
     #node-1 {
         left: 20%;
-        top: 60%;
+        top: 65%;
     }
 
-    /* KSU (Earth) - Was 70%, now 60% (Higher) */
+    /* KSU (Lowest, Top 65% leaves 35% bottom space) */
     #node-2 {
         left: 75%;
-        top: 50%;
+        top: 55%;
     }
 
     /* King Saudi */
     #node-3 {
         left: 25%;
-        top: 40%;
+        top: 45%;
     }
 
     /* XCMG */
     #node-4 {
         left: 80%;
-        top: 29%;
+        top: 32%;
     }
 
     /* PowerChina */
     #node-5 {
         left: 50%;
-        top: 18%;
+        top: 20%;
     }
 
-    /* CET - Highest safe point */
+    /* CET (Highest) */
 
 }
 
