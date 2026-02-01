@@ -339,102 +339,110 @@
    ========================================= */
 @media (max-width: 768px) {
 
-    /* Stack buttons at the bottom */
+    /* --- Cinematic Bottom Dock (Side-by-Side) --- */
     .enter-map-button,
     .message-board-button {
         position: fixed;
-        bottom: 20px;
-        left: 50%;
-        transform: translateX(-50%);
-        width: 80%;
+        bottom: 30px;
+        width: 42%;
+        /* Fit two side by side */
         text-align: center;
-        right: auto;
-        /* Reset right positioning */
+        padding: 12px 0;
+        font-size: 0.9rem;
+        border: 1px solid var(--sand-gold);
+        background: rgba(0, 0, 0, 0.7);
+        /* Darker backdrop for cinematic feel */
+        backdrop-filter: blur(8px);
+        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
+        border-radius: 4px;
     }
 
-    .enter-map-button {
-        bottom: 20px;
-        /* Bottom-most */
-    }
-
+    /* Left Button: Message Board */
     .message-board-button {
-        bottom: 80px;
-        /* Above Enter Map button */
+        left: 5%;
         right: auto;
-        display: block;
-        /* Ensure it behaves like a block for width */
+        transform: none;
+        /* remove center transform */
     }
 
+    /* Right Button: Enter Map */
+    .enter-map-button {
+        right: 5%;
+        left: auto;
+        transform: none;
+        /* remove center transform */
+        bottom: 30px;
+        /* Aligned */
+    }
+
+    /* Replay Button (Top Right or Hidden if not needed) */
     .replay-button {
-        bottom: 140px;
-        /* Above message board */
+        bottom: auto;
+        top: 80px;
+        /* Below title */
         right: 20px;
-        /* Keep to side or center too? Let's keep it side but smaller */
-        padding: 8px 16px;
-        font-size: 0.8rem;
+        padding: 6px 12px;
+        font-size: 0.7rem;
+        opacity: 0.8;
     }
 
-    /* Scale down nodes */
+    /* --- Nodes Area (Restricted to Top 65%) --- */
+    /* Scale down nodes slightly more */
     .level-node {
-        transform: translate(-50%, -50%) scale(0.7);
-        /* Smaller nodes */
+        transform: translate(-50%, -50%) scale(0.65);
     }
 
     .level-node:hover {
-        transform: translate(-50%, -50%) scale(0.85);
-        /* Smaller hover state */
+        transform: translate(-50%, -50%) scale(0.8);
     }
 
     /* Adjust label positioning */
     .node-label {
-        font-size: 0.9rem;
-        /* Smaller labels */
-        margin-top: 45px;
+        font-size: 0.85rem;
+        margin-top: 40px;
         white-space: normal;
-        width: 120px;
+        width: 100px;
+        background: rgba(0, 0, 0, 0.6);
+        /* Slightly more transparent */
+        border: none;
+        /* Cleaner look */
+        text-shadow: 0 1px 3px black;
     }
 
-    /* Hide the path line on mobile as it won't match the new positions */
-    #path-svg {
-        opacity: 0.3;
-        /* Or hidden if we can't redraw it */
-        /* display: none; */
-    }
-
-    .path-line {
-        display: none;
-        /* Hide the SVG path on mobile */
-    }
-
-    /* --- Mobile Specific Node Layout (Zigzag / Vertical) --- */
-    /* Avoid bottom 30% */
-
-    /* 1. KSU (Bottom-ish) -> 2. King Saudi (Mid-Left) -> 3. XCMG (Mid-Right) -> 4. PowerChina (Top-Left) -> 5. CET (Top-Right) */
+    /* Zigzag Layout (Upper 65%) */
+    /* 1. Bottom-Leftish -> 2. Mid-Right -> 3. Mid-Left -> 4. Top-Right -> 5. Top-Left */
 
     #node-1 {
         left: 20%;
-        top: 60%;
+        top: 62%;
     }
 
+    /* KSU - Lowest but above buttons */
     #node-2 {
-        left: 60%;
-        top: 50%;
+        left: 75%;
+        top: 52%;
     }
 
+    /* King Saudi */
     #node-3 {
-        left: 30%;
-        top: 38%;
+        left: 25%;
+        top: 40%;
     }
 
+    /* XCMG */
     #node-4 {
-        left: 70%;
-        top: 25%;
+        left: 80%;
+        top: 28%;
     }
 
+    /* PowerChina */
     #node-5 {
-        left: 40%;
-        top: 12%;
+        left: 50%;
+        top: 15%;
     }
+
+    /* CET - Top Center-ish */
+
 
 }
 
