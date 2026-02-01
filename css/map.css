@@ -343,15 +343,14 @@
     .enter-map-button,
     .message-board-button {
         position: fixed;
-        bottom: 30px;
+        bottom: 80px;
+        /* Lifted up */
         width: 42%;
-        /* Fit two side by side */
         text-align: center;
         padding: 12px 0;
         font-size: 0.9rem;
         border: 1px solid var(--sand-gold);
         background: rgba(0, 0, 0, 0.7);
-        /* Darker backdrop for cinematic feel */
         backdrop-filter: blur(8px);
         box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
         border-radius: 4px;
@@ -362,7 +361,6 @@
         left: 5%;
         right: auto;
         transform: none;
-        /* remove center transform */
     }
 
     /* Right Button: Enter Map */
@@ -370,23 +368,30 @@
         right: 5%;
         left: auto;
         transform: none;
-        /* remove center transform */
-        bottom: 30px;
-        /* Aligned */
+        bottom: 80px;
+        /* Aligned with Message Board */
     }
 
-    /* Replay Button (Top Right or Hidden if not needed) */
+    /* Replay Button (Stacked BELOW Message Board) */
     .replay-button {
-        bottom: auto;
-        top: 80px;
-        /* Below title */
-        right: 20px;
-        padding: 6px 12px;
-        font-size: 0.7rem;
+        position: fixed;
+        bottom: 30px;
+        /* In the empty space below */
+        left: 5%;
+        /* Aligned with Message Board */
+        width: 42%;
+        /* Same width */
+        right: auto;
+        top: auto;
+        padding: 8px 0;
+        font-size: 0.8rem;
         opacity: 0.8;
+        text-align: center;
+        border: 1px solid rgba(212, 175, 55, 0.5);
+        background: rgba(0, 0, 0, 0.5);
     }
 
-    /* --- Nodes Area (Restricted to Top 65%) --- */
+    /* --- Nodes Area (Restricted to Middle Zone) --- */
     /* Scale down nodes slightly more */
     .level-node {
         transform: translate(-50%, -50%) scale(0.65);
@@ -403,45 +408,43 @@
         white-space: normal;
         width: 100px;
         background: rgba(0, 0, 0, 0.6);
-        /* Slightly more transparent */
         border: none;
-        /* Cleaner look */
         text-shadow: 0 1px 3px black;
     }
 
-    /* Zigzag Layout (Upper 65%) */
-    /* 1. Bottom-Leftish -> 2. Mid-Right -> 3. Mid-Left -> 4. Top-Right -> 5. Top-Left */
+    /* Zigzag Layout (Middle Zone - Clear Title & Bottom) */
+    /* Range: 30% Top (Highest) to 70% Top (Lowest) */
 
     #node-1 {
         left: 20%;
-        top: 62%;
+        top: 70%;
     }
 
-    /* KSU - Lowest but above buttons */
+    /* KSU - Lowest */
     #node-2 {
         left: 75%;
-        top: 52%;
+        top: 60%;
     }
 
     /* King Saudi */
     #node-3 {
         left: 25%;
-        top: 40%;
+        top: 50%;
     }
 
     /* XCMG */
     #node-4 {
         left: 80%;
-        top: 28%;
+        top: 40%;
     }
 
     /* PowerChina */
     #node-5 {
         left: 50%;
-        top: 15%;
+        top: 30%;
     }
 
-    /* CET - Top Center-ish */
+    /* CET - Highest (Safe from title) */
 
 
 }
