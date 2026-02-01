@@ -341,6 +341,7 @@
 
     /* --- Vertical Button Stack (Green Zone) --- */
     /* All buttons centered, stacked, same width */
+    /* Styles match base.css .controls to respect "don't change colors" */
 
     .enter-map-button,
     .message-board-button,
@@ -351,14 +352,19 @@
         width: 60%;
         /* Consistent Width */
         text-align: center;
-        padding: 10px 0;
+        padding: 12px 0;
         font-size: 0.9rem;
+
+        /* Strict Match to base.css .controls styles here */
         border: 1px solid var(--sand-gold);
-        background: rgba(0, 0, 0, 0.75);
-        backdrop-filter: blur(8px);
-        box-shadow: 0 0 15px rgba(0, 0, 0, 0.8);
-        border-radius: 4px;
+        background: rgba(0, 0, 0, 0.6);
+        /* Original Opacity */
+        backdrop-filter: blur(4px);
+        /* Original Blur */
         color: var(--sand-gold);
+        box-shadow: none;
+        /* No extra shadow */
+
         text-transform: uppercase;
         z-index: 100;
         right: auto;
