@@ -103,3 +103,24 @@
     letter-spacing: 2px;
     pointer-events: none;
 }
+
+/* =========================================
+   Mobile Responsiveness (Intro)
+   ========================================= */
+@media (max-width: 768px) {
+    .text-container {
+        width: 95%;
+        /* Wider container on mobile */
+    }
+
+    .text-line {
+        font-size: clamp(1.1rem, 5vw, 1.8rem);
+        /* Slightly smaller text */
+        line-height: 1.5;
+    }
+
+    .click-hint {
+        bottom: 80px;
+        /* Move up slightly to avoid bottom safe areas usually */
+    }
+}

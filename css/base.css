@@ -112,3 +112,25 @@ body {
     color: black;
     box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
 }
+
+/* =========================================
+   Mobile Responsiveness (Base)
+   ========================================= */
+@media (max-width: 768px) {
+    .game-title {
+        font-size: 1.5rem;
+        /* Smaller title on mobile */
+        top: 2%;
+        /* Move it up a bit */
+        flex-direction: column;
+        /* Stack logo and text */
+        gap: 5px;
+        letter-spacing: 2px;
+    }
+
+    .title-logo {
+        height: 2em;
+        transform: none;
+        /* Reset transform */
+    }
+}

@@ -328,9 +328,72 @@
 }
 
 .level-node:hover .node-label {
-    opacity: 1;
     transform: scale(1.1);
     background: rgba(0, 20, 40, 0.95);
     border-color: var(--sand-gold);
     color: var(--sand-gold);
+}
+
+/* =========================================
+   Mobile Responsiveness (Map)
+   ========================================= */
+@media (max-width: 768px) {
+
+    /* Stack buttons at the bottom */
+    .enter-map-button,
+    .message-board-button {
+        position: fixed;
+        bottom: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80%;
+        text-align: center;
+        right: auto;
+        /* Reset right positioning */
+    }
+
+    .enter-map-button {
+        bottom: 20px;
+        /* Bottom-most */
+    }
+
+    .message-board-button {
+        bottom: 80px;
+        /* Above Enter Map button */
+        right: auto;
+        display: block;
+        /* Ensure it behaves like a block for width */
+    }
+
+    .replay-button {
+        bottom: 140px;
+        /* Above message board */
+        right: 20px;
+        /* Keep to side or center too? Let's keep it side but smaller */
+        padding: 8px 16px;
+        font-size: 0.8rem;
+    }
+
+    /* Scale down nodes */
+    .level-node {
+        transform: translate(-50%, -50%) scale(0.7);
+        /* Smaller nodes */
+    }
+
+    .level-node:hover {
+        transform: translate(-50%, -50%) scale(0.85);
+        /* Smaller hover state */
+    }
+
+    /* Adjust label positioning */
+    .node-label {
+        font-size: 1rem;
+        /* readable size */
+        margin-top: 50px;
+        /* More space to avoid overlap */
+        white-space: normal;
+        /* Allow wrap */
+        width: max-content;
+        max-width: 150px;
+    }
 }
