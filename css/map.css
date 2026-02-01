@@ -387,13 +387,83 @@
 
     /* Adjust label positioning */
     .node-label {
-        font-size: 1rem;
-        /* readable size */
-        margin-top: 50px;
-        /* More space to avoid overlap */
+        font-size: 0.9rem;
+        /* Smaller labels */
+        margin-top: 45px;
         white-space: normal;
-        /* Allow wrap */
-        width: max-content;
-        max-width: 150px;
+        width: 120px;
+    }
+
+    /* Hide the path line on mobile as it won't match the new positions */
+    #path-svg {
+        opacity: 0.3;
+        /* Or hidden if we can't redraw it */
+        /* display: none; */
+    }
+
+    .path-line {
+        display: none;
+        /* Hide the SVG path on mobile */
+    }
+
+    /* --- Mobile Specific Node Layout (Zigzag / Vertical) --- */
+    /* Avoid bottom 30% */
+
+    /* 1. KSU (Bottom-ish) -> 2. King Saudi (Mid-Left) -> 3. XCMG (Mid-Right) -> 4. PowerChina (Top-Left) -> 5. CET (Top-Right) */
+
+    #node-1 {
+        left: 20%;
+        top: 60%;
+    }
+
+    #node-2 {
+        left: 60%;
+        top: 50%;
+    }
+
+    #node-3 {
+        left: 30%;
+        top: 38%;
+    }
+
+    #node-4 {
+        left: 70%;
+        top: 25%;
+    }
+
+    #node-5 {
+        left: 40%;
+        top: 12%;
+    }
+
+}
+
+/* =========================================
+   Desktop Node Positions (Moved from HTML)
+   ========================================= */
+@media (min-width: 769px) {
+    #node-1 {
+        left: 10%;
+        top: 85%;
+    }
+
+    #node-2 {
+        left: 30%;
+        top: 60%;
+    }
+
+    #node-3 {
+        left: 50%;
+        top: 75%;
+    }
+
+    #node-4 {
+        left: 70%;
+        top: 40%;
+    }
+
+    #node-5 {
+        left: 90%;
+        top: 15%;
     }
 }
