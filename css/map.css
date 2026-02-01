@@ -349,8 +349,8 @@
         position: fixed;
         left: 50%;
         transform: translateX(-50%);
-        width: 60%;
-        /* Consistent Width */
+        width: 80%;
+        /* Widen from 60% to 80% as requested */
         text-align: center;
         padding: 12px 0;
         font-size: 0.9rem;
@@ -374,22 +374,24 @@
     }
 
     /* Stack Order (Bottom Up): Replay -> Message -> Enter Map */
+    /* Moved down further by ~15px */
 
     /* 1. Replay (Bottom) */
     .replay-button {
-        bottom: 30px;
+        bottom: 15px;
+        /* Was 30px */
     }
 
     /* 2. Message Board (Above Replay) */
     .message-board-button {
-        bottom: 85px;
-        /* 30 + 45 + gap */
+        bottom: 70px;
+        /* Was 85px */
     }
 
     /* 3. Enter Map (Top of Stack) */
     .enter-map-button {
-        bottom: 140px;
-        /* 85 + 45 + gap */
+        bottom: 125px;
+        /* Was 140px */
     }
 
     /* --- Nodes Area (Red Zone - Middle Top) --- */
