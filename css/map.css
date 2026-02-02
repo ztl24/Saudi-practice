@@ -390,7 +390,7 @@
 
     /* 3. Enter Map (Top of Stack) */
     .enter-map-button {
-        bottom: 125px;
+        bottom: 15px;
         /* Was 140px */
     }
 
