@@ -378,14 +378,14 @@
     /* Moved down further by ~15px */
 
     /* slot 1 (Bottom): Replay OR Enter Map */
-    .replay-button,
-    .enter-map-button {
-        bottom: 15px;
+    #replay-intro-btn,
+    #enter-map-btn {
+        bottom: 15px !important;
     }
 
     /* slot 2 (Above Bottom): Message Board */
     .message-board-button {
-        bottom: 70px;
+        bottom: 70px !important;
     }
 
     /* --- Nodes Area (Red Zone - Middle Top) --- */
