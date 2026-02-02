@@ -373,25 +373,19 @@
         /* Reset */
     }
 
-    /* Stack Order (Bottom Up): Replay -> Message -> Enter Map */
+    /* Stack Order (Bottom Up): [Replay / Enter Map] -> Message */
+    /* Only two slots needed as Replay and Enter Map are mutually exclusive */
     /* Moved down further by ~15px */
 
-    /* 1. Replay (Bottom) */
-    .replay-button {
-        bottom: 15px;
-        /* Was 30px */
-    }
-
-    /* 2. Message Board (Above Replay) */
-    .message-board-button {
-        bottom: 70px;
-        /* Was 85px */
-    }
-
-    /* 3. Enter Map (Top of Stack) */
+    /* slot 1 (Bottom): Replay OR Enter Map */
+    .replay-button,
     .enter-map-button {
         bottom: 15px;
-        /* Was 140px */
+    }
+
+    /* slot 2 (Above Bottom): Message Board */
+    .message-board-button {
+        bottom: 70px;
     }
 
     /* --- Nodes Area (Red Zone - Middle Top) --- */
