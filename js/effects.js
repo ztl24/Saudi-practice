@@ -18,7 +18,7 @@ class Particle {
 
         // Mobile Speed Adjustment: 60% slower on mobile
         const isMobile = w <= 768;
-        const speedFactor = isMobile ? 0.15 : 1.0;
+        const speedFactor = isMobile ? 0.3 : 1.0;
         // mark
         this.speed = ((this.z * 0.5) + 0.1) * speedFactor;
 
@@ -76,7 +76,7 @@ function initParticles() {
     particles = [];
     // Mobile Optimization: Reduce count from 350 to 120
     const isMobile = window.innerWidth <= 768;
-    const count = isMobile ? 90 : 350;
+    const count = isMobile ? 120 : 350;
     // mark
     for (let i = 0; i < count; i++) particles.push(new Particle());
 }
