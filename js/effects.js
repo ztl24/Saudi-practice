@@ -15,7 +15,12 @@ class Particle {
         const h = window.innerHeight;
 
         this.z = Math.random();
-        this.speed = (this.z * 0.5) + 0.1;
+
+        // Mobile Speed Adjustment: 60% slower on mobile
+        const isMobile = w <= 768;
+        const speedFactor = isMobile ? 0.4 : 1.0;
+
+        this.speed = ((this.z * 0.5) + 0.1) * speedFactor;
 
         const angle = Math.random() * Math.PI * 2;
         const maxR = Math.max(w, h) * 0.7;
@@ -69,7 +74,11 @@ class Particle {
 
 function initParticles() {
     particles = [];
-    for (let i = 0; i < 350; i++) particles.push(new Particle());
+    // Mobile Optimization: Reduce count from 350 to 120
+    const isMobile = window.innerWidth <= 768;
+    const count = isMobile ? 120 : 350;
+
+    for (let i = 0; i < count; i++) particles.push(new Particle());
 }
 
 // --- 2. 信号波形 ( Intro Only ) ---
