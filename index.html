@@ -125,7 +125,19 @@
         重播动画 / REPLAY
     </button>
 
+    <!-- 链接选择弹窗 -->
+    <div id="link-modal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modal-title">地点标题</h2>
+            <div id="modal-links">
+                <!-- 链接按钮将通过 JS 动态生成 -->
+            </div>
+        </div>
+    </div>
+
     <script src="js/script-data.js"></script>
+    <script src="js/links-data.js"></script> <!-- 新增链接数据 -->
     <script src="js/effects.js"></script>
     <script src="js/main.js"></script>
 </body>

@@ -187,14 +187,71 @@ document.addEventListener('click', (e) => {
 const btn = document.getElementById('enter-map-btn');
 if (btn) btn.addEventListener('click', transitionToMap);
 
-// 关卡点击
+// 关卡点击 - 打开链接弹窗
 document.querySelectorAll('.level-node').forEach(node => {
-    node.addEventListener('click', () => {
-        // const label = node.getAttribute('data-label');
-        // alert(`🚀 宇宙飞船点火，前往：${label}`);
-        window.location.href = 'practice.html';
+    node.addEventListener('click', (e) => {
+        e.stopPropagation(); // 防止触发 global click (虽然目前 global click 只处理 skipIntro)
+
+        const nodeId = node.id;
+        const links = locationLinks[nodeId];
+        const modal = document.getElementById('link-modal');
+        const modalTitle = document.getElementById('modal-title');
+        const modalLinks = document.getElementById('modal-links');
+
+        if (links && modal && modalTitle && modalLinks) {
+            // 设置标题 (使用 data-label 或 fallback)
+            // data-label 有时包含 <br>，需要替换为空格或保留
+            const label = node.getAttribute('data-label').replace('<br>', ' ');
+            modalTitle.textContent = label;
+
+            // 清空旧链接
+            modalLinks.innerHTML = '';
+
+            // 生成新链接按钮
+            links.forEach(link => {
+                const a = document.createElement('a');
+                a.className = 'link-btn';
+                a.href = link.url;
+                a.textContent = link.text;
+                a.target = '_blank'; // 新标签页打开
+                a.rel = 'noopener noreferrer';
+                modalLinks.appendChild(a);
+            });
+
+            // 显示弹窗
+            modal.classList.remove('hidden');
+            // Small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
     });
 });
+
+// 弹窗关闭逻辑
+const modal = document.getElementById('link-modal');
+const closeBtn = document.querySelector('.close-modal');
+
+if (closeBtn) {
+    closeBtn.addEventListener('click', () => {
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300); // Wait for transition
+    });
+}
+
+// 点击遮罩层关闭
+if (modal) {
+    modal.addEventListener('click', (e) => {
+        if (e.target === modal) {
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+    });
+}
 
 // --- 启动初始化 ---
 // --- Replay Logic ---
