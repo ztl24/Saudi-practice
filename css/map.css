@@ -237,10 +237,81 @@
    ========================================= */
 @media (max-width: 768px) {
 
-    /* --- Vertical Button Stack (Green Zone) --- */
-    /* All buttons centered, stacked, same width */
-    /* Styles match base.css .controls to respect "don't change colors" */
+    /* --- Hide SVG path (desktop coords don't match mobile) --- */
+    #path-svg {
+        display: none;
+    }
 
+    /* --- Scale down ALL node icons on mobile --- */
+    #node-1 .node-circle {
+        font-size: 40px;
+    }
+
+    #node-2 .node-icon,
+    #node-3 .node-icon {
+        width: 55px;
+        height: 55px;
+    }
+
+    #node-4 .node-icon {
+        width: 70px;
+        height: auto;
+    }
+
+    #node-5 .node-icon {
+        width: 65px;
+        height: auto;
+    }
+
+    /* --- Node container scaling --- */
+    .level-node {
+        transform: translate(-50%, -50%) scale(0.85);
+    }
+
+    .level-node:hover {
+        transform: translate(-50%, -50%) scale(1.0);
+    }
+
+    /* --- Label Styles --- */
+    .node-label {
+        font-size: 0.75rem;
+        margin-top: 8px;
+        white-space: nowrap;
+        width: auto;
+        padding: 4px 10px;
+        background: rgba(0, 0, 0, 0.6);
+        border-radius: 4px;
+        border: none;
+        text-shadow: 0 1px 3px black;
+    }
+
+    /* --- Node Positions (zigzag, top 12%–58%) --- */
+    #node-5 {
+        left: 50%;
+        top: 14%;
+    }
+
+    #node-4 {
+        left: 72%;
+        top: 26%;
+    }
+
+    #node-3 {
+        left: 22%;
+        top: 36%;
+    }
+
+    #node-2 {
+        left: 75%;
+        top: 47%;
+    }
+
+    #node-1 {
+        left: 25%;
+        top: 57%;
+    }
+
+    /* --- Vertical Button Stack (bottom) --- */
     .enter-map-button,
     .message-board-button,
     .replay-button {
@@ -248,104 +319,30 @@
         left: 50%;
         transform: translateX(-50%);
         width: 80%;
-        /* Widen from 60% to 80% as requested */
         text-align: center;
         padding: 12px 0;
         font-size: 0.9rem;
-
-        /* Strict Match to base.css .controls styles here */
         border: 1px solid var(--sand-gold);
         background: rgba(0, 0, 0, 0.6);
-        /* Original Opacity */
         backdrop-filter: blur(4px);
-        /* Original Blur */
         color: var(--sand-gold);
         box-shadow: none;
-        /* No extra shadow */
-
         text-transform: uppercase;
         z-index: 100;
         right: auto;
-        /* Reset */
         top: auto;
-        /* Reset */
     }
 
-    /* Stack Order (Bottom Up): [Replay / Enter Map] -> Message */
-    /* Only two slots needed as Replay and Enter Map are mutually exclusive */
-    /* Moved down further by ~15px */
-
-    /* slot 1 (Bottom): Replay OR Enter Map */
+    /* Replay OR Enter Map — bottom slot */
     #replay-intro-btn,
     #enter-map-btn {
         bottom: 15px !important;
     }
 
-    /* slot 2 (Above Bottom): Message Board */
+    /* Message Board — above bottom slot */
     .message-board-button {
         bottom: 70px !important;
     }
-
-    /* --- Nodes Area (Red Zone - Middle Top) --- */
-    /* Must be clear of bottom 200px (approx 30% of screen) */
-
-    /* Scale down nodes */
-    .level-node {
-        transform: translate(-50%, -50%) scale(0.65);
-    }
-
-    .level-node:hover {
-        transform: translate(-50%, -50%) scale(0.8);
-    }
-
-    /* Label Styles: No Wrap */
-    .node-label {
-        font-size: 0.8rem;
-        margin-top: 40px;
-        white-space: nowrap;
-        /* Prevent wrapping as requested */
-        width: auto;
-        /* Auto width to fit text */
-        padding: 4px 10px;
-        background: rgba(0, 0, 0, 0.6);
-        border: none;
-        text-shadow: 0 1px 3px black;
-    }
-
-    /* Zigzag Layout (Red Zone) */
-    /* Range: 15% Top to 60% Top */
-    /* Leaves bottom 40% clear for the tall button stack */
-
-    #node-1 {
-        left: 20%;
-        top: 60%;
-    }
-
-    /* KSU (Lowest node) */
-    #node-2 {
-        left: 80%;
-        top: 50%;
-    }
-
-    /* King Saudi */
-    #node-3 {
-        left: 25%;
-        top: 40%;
-    }
-
-    /* XCMG */
-    #node-4 {
-        left: 75%;
-        top: 28%;
-    }
-
-    /* PowerChina */
-    #node-5 {
-        left: 50%;
-        top: 18%;
-    }
-
-    /* CET (Highest) */
 
 }
 

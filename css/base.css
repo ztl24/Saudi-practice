@@ -118,19 +118,15 @@ body {
    ========================================= */
 @media (max-width: 768px) {
     .game-title {
-        font-size: 1.5rem;
-        /* Smaller title on mobile */
-        top: 2%;
-        /* Move it up a bit */
+        font-size: 1.1rem;
+        top: 1%;
         flex-direction: column;
-        /* Stack logo and text */
-        gap: 5px;
-        letter-spacing: 2px;
+        gap: 3px;
+        letter-spacing: 1px;
     }
 
     .title-logo {
-        height: 2em;
+        height: 1.6em;
         transform: none;
-        /* Reset transform */
     }
 }
