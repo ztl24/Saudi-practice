@@ -3,24 +3,21 @@
 
 const locationLinks = {
     "node-1": [ // 苏尔坦亲王大学
-        { text: "苏尔坦亲王大学官网", url: "#" },
-        { text: "孔子学院介绍", url: "#" }
+        {
+            text: "穹顶拾慧，弦歌互鉴",
+            url: "https://mp.weixin.qq.com/s/bob52etPjdPHZsG3xVGmig"
+        }
     ],
     "node-2": [ // 沙特国王大学
-        { text: "沙特国王大学官网", url: "#" },
-        { text: "相关新闻报道", url: "#" },
-        { text: "合作项目详情", url: "#" }
+        { text: "拾景中 / In Progress...", url: "#" }
     ],
     "node-3": [ // 徐工集团展会
-        { text: "徐工集团官网", url: "#" },
-        { text: "展会现场视频", url: "#" }
+        { text: "笔墨微醺，静候佳音", url: "#" }
     ],
     "node-4": [ // 中国电建
-        { text: "中国电建官网", url: "#" },
-        { text: "沙特项目介绍", url: "#" }
+        { text: "沙海流电，城垣访古", url: "https://mp.weixin.qq.com/s/4I4evyoli8q5i5SLhZ2bLg" }
     ],
     "node-5": [ // 中电装备
-        { text: "中电装备官网", url: "#" },
-        { text: "业务领域介绍", url: "#" }
+        { text: "正在采撷，即将启封", url: "#" }
     ]
 };
