@@ -6,6 +6,10 @@ const locationLinks = {
         {
             text: "穹顶拾慧，弦歌互鉴",
             url: "https://mp.weixin.qq.com/s/bob52etPjdPHZsG3xVGmig"
+        },
+        {
+            text: "《前线》——春风度沙海，文化共长虹",
+            url: "http://app.bjqx.org.cn/portal/sites/distH5/pages/index.html#/news/organInformation?id=749710&docLibId=79118&doc_type=%E6%96%87%E7%AB%A0%E6%96%B0%E9%97%BB&pubId=635668&siteId=83"
         }
     ],
     "node-2": [ // 沙特国王大学
