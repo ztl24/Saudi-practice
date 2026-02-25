@@ -13,10 +13,10 @@ const locationLinks = {
         }
     ],
     "node-2": [ // 沙特国王大学
-        { text: "拾景中 / In Progress...", url: "#" }
+        { text: "笔墨微醺，静候佳音", url: "#" }
     ],
     "node-3": [ // 徐工集团展会
-        { text: "笔墨微醺，静候佳音", url: "#" }
+        { text: "巨械凌云，瀚海铄金", url: "https://mp.weixin.qq.com/s/P2P1ZwTRTzHncyrNgB9sVQ?scene=1" }
     ],
     "node-4": [ // 中国电建
         { text: "沙海流电，城垣访古", url: "https://mp.weixin.qq.com/s/4I4evyoli8q5i5SLhZ2bLg" }
