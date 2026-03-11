@@ -10,10 +10,18 @@ const locationLinks = {
         {
             text: "《前线》——春风度沙海，文化共长虹",
             url: "http://app.bjqx.org.cn/portal/sites/distH5/pages/index.html#/news/organInformation?id=749710&docLibId=79118&doc_type=%E6%96%87%E7%AB%A0%E6%96%B0%E9%97%BB&pubId=635668&siteId=83"
+        },
+        {
+            text: "清华大学社会实践 | Ru’yat Tech支队赴沙特苏尔坦亲王大学举办文化交流活动",
+            url: "https://mp.weixin.qq.com/s/G4BpEW6HJcA-ahQr5W56jg"
         }
+
     ],
     "node-2": [ // 沙特国王大学
-        { text: "笔墨微醺，静候佳音", url: "#" }
+        {
+            text: "学府探微，新知共响",
+            url: "https://mp.weixin.qq.com/s/TOF6X9vcl-nc9I_W_G51Jg"
+        }
     ],
     "node-3": [ // 徐工集团展会
         { text: "巨械凌云，瀚海铄金", url: "https://mp.weixin.qq.com/s/P2P1ZwTRTzHncyrNgB9sVQ?scene=1" }
@@ -22,6 +30,9 @@ const locationLinks = {
         { text: "沙海流电，城垣访古", url: "https://mp.weixin.qq.com/s/4I4evyoli8q5i5SLhZ2bLg" }
     ],
     "node-5": [ // 中电装备
-        { text: "正在采撷，即将启封", url: "#" }
+        {
+            text: "丝路筑网，柔直通途",
+            url: "https://mp.weixin.qq.com/s/t_4wCTfKxZ9UgPTk_zIexg"
+        }
     ]
 };
