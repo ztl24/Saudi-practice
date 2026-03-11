@@ -194,8 +194,16 @@
     height: 200px;
 }
 
+#node-6 .node-icon {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
 /* 1. 地球 (Emoji Style) - Use ID for easier customization */
-#node-1 .node-circle {
+#node-1 .node-circle,
+#node-7 .node-circle {
     font-size: 60px;
 }
 
@@ -243,12 +251,15 @@
     }
 
     /* --- Scale down ALL node icons on mobile --- */
-    #node-1 .node-circle {
+    #node-1 .node-circle,
+    #node-6 .node-circle,
+    #node-7 .node-circle {
         font-size: 40px;
     }
 
     #node-2 .node-icon,
-    #node-3 .node-icon {
+    #node-3 .node-icon,
+    #node-6 .node-icon {
         width: 55px;
         height: 55px;
     }
@@ -285,30 +296,40 @@
         text-shadow: 0 1px 3px black;
     }
 
-    /* --- Node Positions (zigzag, top 12%–58%) --- */
-    #node-5 {
+    /* --- Node Positions (zigzag, top 10%–66%) --- */
+    #node-7 {
         left: 50%;
-        top: 14%;
+        top: 10%;
     }
 
-    #node-4 {
-        left: 72%;
+    #node-6 {
+        left: 20%;
+        top: 18%;
+    }
+
+    #node-5 {
+        left: 75%;
         top: 26%;
     }
 
-    #node-3 {
-        left: 22%;
+    #node-4 {
+        left: 25%;
         top: 36%;
     }
 
+    #node-3 {
+        left: 72%;
+        top: 46%;
+    }
+
     #node-2 {
-        left: 75%;
-        top: 47%;
+        left: 22%;
+        top: 56%;
     }
 
     #node-1 {
-        left: 25%;
-        top: 57%;
+        left: 70%;
+        top: 66%;
     }
 
     /* --- Vertical Button Stack (bottom) --- */
@@ -356,23 +377,33 @@
     }
 
     #node-2 {
-        left: 30%;
+        left: 23%;
         top: 60%;
     }
 
     #node-3 {
-        left: 50%;
+        left: 36%;
         top: 75%;
     }
 
     #node-4 {
-        left: 70%;
-        top: 40%;
+        left: 50%;
+        top: 50%;
     }
 
     #node-5 {
+        left: 63%;
+        top: 70%;
+    }
+
+    #node-6 {
+        left: 76%;
+        top: 45%;
+    }
+
+    #node-7 {
         left: 90%;
-        top: 15%;
+        top: 20%;
     }
 }
 

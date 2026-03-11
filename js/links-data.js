@@ -30,9 +30,15 @@ const locationLinks = {
         { text: "沙海流电，城垣访古", url: "https://mp.weixin.qq.com/s/4I4evyoli8q5i5SLhZ2bLg" }
     ],
     "node-5": [ // 中电装备
+        { text: "丝路筑网，柔直通途", url: "https://mp.weixin.qq.com/s/t_4wCTfKxZ9UgPTk_zIexg" }
+    ],
+    "node-6": [ // 沙特华侨华人联合会
+        { text: "力量开疆，同心汇流", url: "https://mp.weixin.qq.com/s/YvMZenI3HL6caG4_slLbCQ" }
+    ],
+    "node-7": [ // 实践总结推送
         {
-            text: "丝路筑网，柔直通途",
-            url: "https://mp.weixin.qq.com/s/t_4wCTfKxZ9UgPTk_zIexg"
+            text: "实践 | 跨越山海，共见“愿景”：清华大学机械系“Ru’yat Tech”支队赴沙特调研圆满收官",
+            url: "http://app.bjqx.org.cn/portal/sites/distH5/pages/index.html#/news/organInformation?id=751121&docLibId=79118&doc_type=%E6%96%87%E7%AB%A0%E6%96%B0%E9%97%BB&pubId=636644&siteId=83&shareFlag=1&shareFlag=1"
         }
     ]
 };
