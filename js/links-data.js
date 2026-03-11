@@ -37,8 +37,12 @@ const locationLinks = {
     ],
     "node-7": [ // 实践总结推送
         {
-            text: "实践 | 跨越山海，共见“愿景”：清华大学机械系“Ru’yat Tech”支队赴沙特调研圆满收官",
+            text: "《前线》——清华大学机械系“Ru’yat Tech”支队赴沙特调研圆满收官",
             url: "http://app.bjqx.org.cn/portal/sites/distH5/pages/index.html#/news/organInformation?id=751121&docLibId=79118&doc_type=%E6%96%87%E7%AB%A0%E6%96%B0%E9%97%BB&pubId=636644&siteId=83&shareFlag=1&shareFlag=1"
+        },
+        {
+            text: "机械力量 | 跨越山海，共见“愿景”：Ru'yat Tech支队实践总结与展望",
+            url: "https://mp.weixin.qq.com/s/1RLhv_5OtblxTmfJUARwxA"
         }
     ]
 };
